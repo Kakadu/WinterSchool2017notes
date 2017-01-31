@@ -33,7 +33,7 @@ langauges are ``easy`` but set theory is ``hard``.
 \footnote{Long very weird history about inventing ``a new math`` by americans to compete with USSR.
 And this new math started from teaching sets in schoold as basis of mathematics}
 
-
+Kesarev loh
 \chapter{Simply typed $\lambda$-calculus}
 
 Types: $\sigma ::= i | \sigma -> \sigma$
@@ -101,8 +101,9 @@ $\varrho[x \mapsto a] \varrho(a) when x =/= y$
 Proposition. If M is well-typed of type $\sigma$ then $\llbracket M\rrbracket_\varrho \in
 A_\sigma$ where $\varrho$ is a var. environment
 
-\subsection{тут лемма}
-%TODO: переписать
+\subsection{lemma}
+% тут лемма
+%TODO: переписать с тетради
 
 
 \section{Two views}
@@ -158,7 +159,7 @@ It were congruence rules.
 
 \begin{prooftree}
  \AxioM{}
- \UnaryInfC{$\lambda x . M = M[N/x]$}
+ \UnaryInfC{$(\lambda x . M)N = M[N/x]$}
 \end{prooftree}
 
 $\beta$-reduction.
@@ -173,7 +174,7 @@ $\alpha$-conversion
 \begin{prooftree}
  \AxiomC{$x \notin FV(M)$}
  \AxiomC{$M: \sigma \rightarrow \tau$}
- \BinaryInfC{$M = \lambda x^\tau . M x $}
+ \BinaryInfC{$M = \lambda x^\sigma . M x $}
 \end{prooftree}
 $\eta$-something
 
@@ -191,10 +192,10 @@ Let's prove that other axioms are OK, (not really weird, sanely chosen ot someth
 
 
 
-$\llbracket (\lambda x .M)N\rrbracket _\varrho$ =
-$\llbracket (\lambda x .M)\rrbracket_\varrho (\llbracket N\rrbracket_\varrho)$ =
-$(a \mapsto \llbracket M\rrbracket\varrho[x->a]) (\llbracket N\rrbracket_\varrho)$ =
-$\llbracket M \rrbracket _\varrho [x -> \llbracket N\rrbracket_\varrho]$ 
+% $\llbracket (\lambda x .M)N\rrbracket _\varrho$ =
+% $\llbracket (\lambda x .M)\rrbracket_\varrho (\llbracket N\rrbracket_\varrho)$ =
+% $(a \mapsto \llbracket M\rrbracket\varrho[x->a]) (\llbracket N\rrbracket_\varrho)$ =
+% $\llbracket M \rrbracket _\varrho [x -> \llbracket N\rrbracket_\varrho]$ 
 
 
 (Capture avoiding) Substituition Lemma.
@@ -280,7 +281,7 @@ But when we use empty set as $A_i$ we can get a \textit{classical} tautology whi
 \subsection{}
 We need a one thing for completeness proof.
 
-Completeness: If forall $A_i$ andnd all $\rho$: $\sem{M}{\rho}$ then $M=N$ in 
+Completeness: If $\forall$ $A_i$ and $\forall$ $\rho$: $\sem{M}{\rho}$ then $M=N$ in 
 $\alpha,\beta\eta$ sense.
 
 Fridman's compeleteness theorem
@@ -292,13 +293,14 @@ For finite set we can get lambda-terms which will not be $\alpha,\beta\eta$ equi
 It's rather difficult to proof Fridman's theorem straightforwardly.
 
 \subsection{Henkin model for $\lambda$-calculus}
-$A_{\sigma \rightarrow \tau} \subseteq {A_\tau}^{A_\sigma}$
+The idea is to select not the whole subset but a $A_{\sigma \rightarrow \tau} \subseteq {A_\tau}^{A_\sigma}$.
 
-Let's define sematics for application
-$\sem{MN}{\rho} = \sem{M}{\rho}(\sem{N}{\rho})$
+Let's define sematics for application:
+$\sem{MN}{\rho} = \sem{M}{\rho}(\sem{N}{\rho})$.
 
-$\sem{\lambda x . M}{\rho} = (a \mapsto \sem{M}{\rho[x \mapsto a]}$ which is $A_\sigma \rightarrow A_\tau$
-The problem is that right part can be not in the chosen subset. And It's difficult to check because the set has infinite size.
+$\sem{\lambda x . M}{\rho} = (a \mapsto \sem{M}{\rho[x \mapsto a]})$ which is $A_\sigma \rightarrow A_\tau$
+The problem is that right part can be not in the chosen subset. And it's difficult to check this because the 
+set has infinite size.
 
 Let's suppose that $A_i$ is partially ordered set and
 $A_{\sigma \rightarrow \tau} = \{ f: A_\sigma \rightarrow A_\tau | 
@@ -309,13 +311,276 @@ At least the things we chosen should behave as functions, we need to be able to 
 $\forall \sigma, \tau app_{\sigma,\tau} : A_{\sigma \rightarrow \tau} \times A_{\sigma} 
 \rightarrow A_{\tau}$
 
-Extensibility: $\forall f,g \in A_{\tau \rightarrow \tau} (\forall x \in A_{\sigma}: app(f,x) = app(g,x)) \Rightarrow f = g$, i.e. functions are the same if they behave the same.
+Extensibility: $\forall f,g \in A_{\tau \rightarrow \tau}$ $(\forall x \in A_{\sigma}: app(f,x) = app(g,x)) \Rightarrow f = g$, i.e. functions are the same if they behave the same.
 
-$forall \sigma,\tau: ab_{\sigma,\tau} {A_\tau}^{A_\sigma} \rightharpoonup A_{\sigma \rightarrow \tau}$ (surjection).
+$\forall \sigma,\tau$  $ab_{\sigma,\tau}: {A_\tau}^{A_\sigma} \rightharpoonup A_{\sigma \rightarrow \tau}$ (surjection).
 
 $app (ab(f), x) = f(x)$
 
 let $f: f: A_{\sigma} \rightarrow A_{\tau}, g \in A_{\sigma \rightarrow \tau}, 
 (\forall x \in A_{\sigma} f(x) = app(g,x)) \Rightarrow ab(f) = g$
+
+\section{Some notes about 1st day exercises}
+\begin{itemize}
+ \item 
+ \item 
+ \item Church typing: every var has a fixed type. Curry typing: terms are untyped, types are assigend
+ The task was too typecheck $TT$ where $T=\lambda f \lambda x f(f(f x))$. The answer is 
+ $(\alpha \rightarrow \alpha) \rightarrow (\alpha \rightarrow \alpha)$.
+ 
+\begin{prooftree}
+\AxiomC{$f$}
+\AxiomC{$x$}
+\BinaryInfC{$f x$}
+\AxiomC{$f$}
+\BinaryInfC{$f (f x)$}
+\AxiomC{$f$}
+\BinaryInfC{$f(f(f x))$}
+\UnaryInfC{$\lambda f^3 x$}
+\UnaryInfC{$\lambda f \lambda x f^3 x$}
+\end{prooftree}
+... and long exlanation about Milner's type reconstruction alrorithm, occurs check and that 
+$A \neq a \rightarrow B$ for any \textit{finite} $A$.
+
+Exercise 4.
+$A_i$ is o.o. set. 
+
+%TODO
+
+Lemma. $x \leq y$, $f \leq g$ then $f(x) \leq g(y)$.  Proof. let's put $f(y)$ in the middle
+
+
+
+Now 
+$\sem{\lambda x . M}{\rho}$ = $(a \mapsto \sem{M}{\rho[x \mapsto a]})$ 
+
+$a \leq b$ : $\sem{M}{\rho[x \mapsto a]} \leq \sem{M}{\rho[x \mapsto b]}$
+
+by induction of the structure of M.
+
+Application: $M \equiv x$ $M\equiv y$ $M=NP$
+
+$\sem{M}{\rho[x \mapsto a]} \leq \sem{N}{\rho[x \mapsto b]}$ 
+
+Lambda-abstraction:
+$M = \lambda y . N$, $\sem{\lambda y N}{\rho[x \mapsto a]} = (c \rightarrow \sem{N}{\rho[x\mapsto a, ]})$
+
+$\rho \leq \rho' if \forall x \in Var \rho(x) \leq \rho'(x)$
+
+$\sem{M}{\rho} \leq \sem{M}{\rho'}$ And now a random question where we use antimonotonicity for ordered relation 
+which nobody did get.
+
+
+\end{itemize}
+
+
+\section{DAy 2}
+Back to completness proof. Now we will chose only one model and only one $\rho$ to show 
+$\alpha, \beta, \eta$ equivalence. The general technique is to make a completness proof for a new caculus 
+to be sure that we listed enough rules in it.
+
+Termmodel: $S_\sigma = $ all terms of type $\sigma$ $ / \alpha\beta\eta$. So we introduce equivalence classes.
+
+$[x^\sigma] \in S_\sigma$. Also $(\lambda x .x) x$ is in the same class, so $S\sigma$ is infinite. 
+$[y^\sigma]$ is another class,
+
+
+$\forall \sigma |S_\sigma| $ is countable but infinte.
+
+$app([M],[N]) = [MN]$ by definition.
+
+in case when $[M]=[M']$ and $[N]=[N']$ we need to prove that $app([M],[N]) = [M'N']$
+
+We had a rules
+\begin{prooftree}
+ \AxiomC{$ M=M'$ in $\alpha\beta\eta$ sense}
+ \AxiomC{$ M=N'$ in $\alpha\beta\eta$ sense}
+ \BinaryInfC{$ MN=M'N' $ in $\alpha\beta\eta$ sense}
+\end{prooftree}
+
+
+% И тут вопрос от Вяткина, который никто не понял кроме препода
+% Напомнить Диме что-то меня спросить про офис где-то
+
+Showing extensionality.  When we ouck two functions from same class, and if they behave same
+they should be equal.
+
+$[M], [M'] \in S_{\sigma \rightarrow \tau}$
+Assume that $app([M],[N]) = app([M'],[N]) \forall [N]\in S_{\sigma}$. We need to show that $[m]$ and $[M']$ 
+are $\alpha\beta\eta$-equal. We will use particular $[x^\sigma]$ for $[N]$. 
+Now $[Mx] = [M'x]$ are the same or
+in another words $Mx = M'x$ are $\alpha\beta\eta$-equal. By congruence rules we can add $\lambda$: 
+$\lambda x M x = \lambda x . M' x$ 
+and $M$ is $\eta$-equal $\lambda x . M x$ 
+and the same for $M'$. We suppose that 
+$x$ doesn't occur in $M$ and we need a right to choose right $x$ (there we use that the sets are infinite).
+
+Now something less trivial.
+
+$\rho: Var \rightarrow \cup S_\sigma where \sigma is a type$
+
+
+$\sem{\lambda x . M}{\rho}$ = $([N] \mapsto \sem{M}{\rho[x \mapsto [N]]}$, Now the right part should 
+have a representative that behaves in the same way $\in S_{\sigma \rightarrow \tau}$. which is almost trues except the free vars in $M$
+.
+
+Claim. I can compute sematics in the different way. For any term $M$ and any $\rho$
+$\sem{M}{\rho} = [M[r]]$ where ($r$ is a \textit{simultanious} substitution)
+for each $x$ $r(x) \in \rho(x)$
+
+
+
+Now exercise about about defining an simultanious substituion. the proplem was that people 
+think substitution as finite-defined function from free variables in term. In math substituition is 
+usually defnied as global function that behaves everywhere, and behaves as identity for variables 
+that do not occur free in the specified term
+
+Definition.
+$x[r] = r(x)$
+
+$(MN)[r] = (M[r])(N[r])$
+
+$(\lambda x . M)[r] = \lambda z . M[r, x \mapsto z] $ where $z \not\in  FV(r(y)) for y \in FV(M)$
+
+Simultaneous menas that we do not do full substitution, we are not going to introduce closed terms,
+we only do the first level.
+
+Proof of claim.
+$M\equiv x    \sem{x}{\rho} = \rho(x)$ and $[x[r]] = [r(x)]$ and now $\rho(x) = [r(x)]$ bceause 
+$r(x) \in \rho(x)$, $[r(x)] = \rho(x)$.
+
+Lambda case is long....
+$M=\lambda x . M$, $\sem{\lambda x . M}{\rho}$ = $([N] \mapsto \sem{M}{\rho_{x \mapsto [N]}})$
+  
+$[(\lambda x . M)[r]]$ = $[\lambda z . M[r, x:= z]]$. Now we need to look what happen when we apply
+$[\lambda z . M[r, x:= z]]$ to $([N] \mapsto \sem{M}{\rho_{x \mapsto [N]}})$.
+
+$app ([\lambda z . M[r, x:= z]], [N])$ = $[(\lambda z M [r, x:=z])N]$
+
+ = $[(M[r, x:=z])[z:=N]]$
+ 
+ because z is completely new 
+ 
+ = $[M[r, x := N]]$. Now we should show that $r$ should match the environment. The only change we done
+ is $x$ to N. And by induction hypothesis the $[M[r, x := N]]$ is $\sem{M}{\rho_{x \mapsto [N]}}$.
+ 
+We did something but did not use $\alpha$ equivalence. It means that it is redundant. Exerceise to prove it.
+(5 minutes later is not sure about it btw)
+
+$\sem{M}{\rho} = \sem{N}{\rho}$ for $g(x)=[x]$ ($r(x)=x$).
+
+ $[M]$ = $[[M[r]]$ = $\sem{M}{\rho} = \sem{N}{\rho}$ =  $[[N[r]]$ = $[N]$.
+ 
+ and now $M=N$ in $\alpha\beta\eta$-sense.
+
+
+  
+\subsection{maybe something about logical relations}
+Let we have $A_i$ and $B_i$ and we want to relate model based on natural numbers
+
+$R_i \subseteq A_i \times B_i$
+
+$R_{\sigma \rightarrow  \tau} = \{$ (f,g) $\in A_{\sigma \rightarrow \tau} \times
+B_{\sigma \rightarrow \tau} |
+\forall (x,y) \in R_\sigma (f(x), g(y)) \in R_\sigma \}$
+
+Fundamental lemma for logical relations.
+for any type $\sigma$, for any closed term $M$ of type $\sigma$ it's true that 
+$(\sem{M}{} ^A, \sem{M}{} ^B) \in R_\sigma$
+
+Proof. INduction over structure of general terms.
+
+Notes. This lemma is true not only for set-theoretic model but also for Henkinmodel andnd
+others.
+let term is a variable. $(\sem{x}{\rho_A}^A, \sem{x}{\rho_B}^B) \in R_\sigma$
+
+$\sem{x}{\rho_A}^A$ = $\rho_A(x)$
+$\sem{x}{\rho_B}^B) = \rho_B(x)$
+
+We can't take any $\rho$'s but any $\rho_A$,$\rho_A$ that $\forall x (\rho_A(x), \rho_b(x)) \in R_\sigma$.
+
+
+% after lunch continuation
+A: full ($A_{\sigma \rightarrow \tau} \subseteq A_{\tau}^{A_\sigma}$) set-theoretic model over $N$.
+
+B: term model.
+
+logical relation : $R_i \subseteq A_i \times B_i = N \times S_i$ such that $R_i$ is a surjective 
+function from N to $S_i$\footnote{There we use that N is countable}.
+
+Claim. For all types $\sigma$, $R_\sigma$ is a partial surjective function from $A_\sigma$ to $S_\sigma$.
+
+\begin{itemize}
+ \item $(a,t) \& (a,t') \in R_\sigma \Rightarrow t = t'$
+ \item $\forall t \in S_\sigma \exists a  \in A_\sigma (a,t) \in R_\sigma$
+\end{itemize}
+
+Proof. Induction over all types .
+
+$i$: OK, by assumption.
+
+$\sigma \rightarrow \tau$ : $R_\sigma$,$R_\tau$ are partial surjective functions. Let's show 
+$R_{\sigma \rightarrow \tau}$ has properties 1 and two.
+
+% картинка из теорката.
+% Продолжение каринки.
+
+Need $(f,m) \in R_{\sigma \rightarrow \tau})$. Let $(A,t) \in R_\tau$
+
+$(f(a), m(t)) = (S_\tau(R_\sigma(a)), m(t))$ = $S_\tau(m(t)), m(t)) \in R_\tau$
+
+Now proof of Friedman's theorem.
+$\sem{M}{\rho}^A = \sem{N}{\rho}^A$
+
+Chose $\rho$: $\forall x \in Var      [x]_{\alpha\beta\eta} \in S_\sigma$
+And because the logical relation is surjective  we can choose $\rho$ that
+
+$(\rho(x), [x]_{\alpha\beta\eta}) \in R_\sigma$. We could write
+$(S_\tau([x]_{\alpha\beta\eta}), [x]_{\alpha\beta\eta}) \in R_\sigma$.
+
+
+$( \sem{M}{\rho}^A, \sem{M}{\rho'}^B ) \in R_\sigma$
+     ||
+$( \sem{N}{\rho}^A, \sem{N}{\rho'}^B ) \in R_\sigma$     
+
+where $\rho'(x) = [x]_{\alpha}$ and now
+
+$[M] = \sem{M}{\rho'}^B = \sem{N}{\rho'}^B = [N]$. So, $M=N$ in $\alpha\beta\eta$-sense. Qed.
+
+There is a similar theorem in the model-view calculus (or maybe $\mu$-calculus, my hears are bad.).
+
+
+\subsection{more about logical relation}
+
+$(\sem{M}{}^A, \sem{M}{}^B) \in R_\sigma$
+
+We could also set fundamental lemma for unary relations and single model.
+$\sem{M}{} \in P_\sigma$ ($P_i \subseteq A_i$, $R_i \subseteq A_i \times B_i$). we can relate $A_i$ to himself
+and get $(\sem{M}{}, \sem{M}{}, ..., \sem{M}{}) \in R_\sigma$ where $R_i \subseteq A_i \times A_i \times A_i \times ... A_i$.
+
+Definition. $A\in A_\sigma$ is invariant of $(a,a,a,a,,.....a) \in R_\sigma$ for any logical relation $R$.
+
+Fund. lemma. the semantcs of closed $\lambda$-term is invariant.
+
+Question. Is every invariant element the Semantics of a closed term?   
+
+No.
+
+Propostition. (plotkin, 80). a $\sigma$ is a type of order 2. $A_i$ is an infinite set. Every invariant  
+elment of $A_\sigma$ is $\lambda$-definable.
+
+$ord(i) = 0$ and $ord(\sigma \rightarrow \tau) = max { ord(\sigma) + 1, ord(\tau)}$
+
+The proof for >2 we need ''improved logical relations``. But there is a paper about it.
+
+Theorem [Loader`93]. The $\lambda$-definability problem is undecidable.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{prooftree}
+ \AxiomC{$ $}
+ \AxiomC{$ $}
+ \BinaryInfC{$ $}
+\end{prooftree}
+
 
 \end{document}
