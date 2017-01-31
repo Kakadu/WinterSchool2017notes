@@ -1,0 +1,321 @@
+\documentclass[a4paper,10pt]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}
+\usepackage{bussproofs}
+%\usepackage{amssymb}
+\usepackage{stmaryrd}
+
+%\newcommand{\llbracket}{ \llbracket }
+\newcommand{\sem}[2]{ \llbracket#1\rrbracket_{#2} }
+%\AxiomC{$M=M'$}  
+\newcommand{\AxioM}[1]{ \AxiomC{$#1$} }
+\begin{document}
+
+Dana Scott:  A type-theoretic alternative to ISWIM, CUCH and OWHY (1969, published my TCS in 1993).
+
+\begin{itemize}
+\item ICWM by Lundin
+\item CUCH is shorten of Curry+Church.
+\item OWHY (Oh, what have you)
+\end{itemize}
+
+Semantics can be 
+\begin{itemize}
+\item opertaional (how we evaluate it, abstract machine)
+\item logical (describe properties of an object.
+\item denotational (words denote some reality; sets which also have formal language)
+\item games (actions and reactions from the environment)
+\end{itemize}
+
+denotational semantics is often translation from programming languge to set theory. For programmers 
+langauges are ``easy`` but set theory is ``hard``.
+
+\footnote{Long very weird history about inventing ``a new math`` by americans to compete with USSR.
+And this new math started from teaching sets in schoold as basis of mathematics}
+
+
+\chapter{Simply typed $\lambda$-calculus}
+
+Types: $\sigma ::= i | \sigma -> \sigma$
+
+We denote translation as $\llbracket \cdot \rrbracket$.
+
+Semantic branckets: $\llbracket i \rrbracket = A_{\tau}^{A_\sigma} = A_i $, 
+where $i$ is a syntax object and $A$ is arbitrary set.
+
+Grammar (in Church-style\footnote{In Curry-style variable have no types}): 
+\begin{itemize}
+ \item terms $M ::= x | MM | \lambda x . M$
+\end{itemize}
+All types are in $\Pi$, and $type(x) = \sigma$ when $x$ is a variable. For every $\sigma$ there 
+are infinity many veriables of that type. We will write $x^\sigma$ which means that variable has 
+type $\sigma$.
+
+
+
+$\llbracket i -> \tau \rrbracket = \{all (total) functions form A_\sigma to A_\tau\} $
+where functions are subsets of pairs  from $A_\sigma \times A_\tau$.
+
+% Тут полный пиздец с правилами
+\AxiomC{}
+\UnaryInfC{$x^\sigma : \sigma $}
+\DisplayProof
+
+\AxiomC{$M : \sigma -> \tau$} 
+\AxiomC{$N: \sigma$} 
+\BinaryInfC{$MN : \tau$}
+\DisplayProof
+
+\AxiomC{$M: \tau$}
+\AxiomC{}
+\BinaryInfC{$\lambda x^\sigma: M : \sigma -> \tau$}
+\DisplayProof
+
+
+
+\section{Abstract \& concrete syntax}
+In sematics we usually think about abstract syntax. which means a lot of conventions
+for example, $\lambda x . x y$ can be lambda from $x$ to $x y$ or identity function applied to $y$.
+We need derivation trees to be sure.
+
+% Тут картинка которую я пока не умею рисовать в техе. Отлично, можно отдохнуть.
+Another approach instead of derivation is DeBruijn indexes.
+
+\AxiomC{}
+\AxiomC{$\llbracket M\rrbracket \in A_\sigma$}
+\BinaryInfC{$\llbracket x^\sigma\rrbracket_\varrho = \varrho(x)\}
+and \varrho : Var -> Union A_\sigma for all \sigma \in \Pi$}
+\DisplayProof
+
+\AxiomC{$\llbracket MN\rrbracket_\varrho = \llbracket M\rrbracket\varrho (\llbracket N\rrbracket\varrho)$}
+\AxiomC{}
+\BinaryInfC{}
+\DisplayProof
+
+Where $\llbracket M\rrbracket_\varrho \in {A_\tau}^{A_\tau}$ etc
+
+$\llbracket \lambda x^\sigma . M\rrbracket_\varrho = (a \mapsto \llbracket M\rrbracket_\varrho[x \mapsto a] = lambda a [M]\varrho[x \mapsto a]$
+
+$\varrho[x \mapsto a] \varrho(a) when x =/= y$
+
+Proposition. If M is well-typed of type $\sigma$ then $\llbracket M\rrbracket_\varrho \in
+A_\sigma$ where $\varrho$ is a var. environment
+
+\subsection{тут лемма}
+%TODO: переписать
+
+
+\section{Two views}
+\begin{itemize}
+ \item Sets and functions as a semantics of $\lambda$-calculus.
+ \item $\lambda$-calculus is a language to denote sets and functions.
+\end{itemize}
+
+Expressivity: how many functions can be defined?
+
+We started from finite sets and built a finite theory from finite types. And let's say we are given a function from finite set to finite set (we can describe it as finite set of pairs). Is this functions $\lambda$-describable.
+
+Let's look: we have a type $i \rightarrow i$. Can we describe function 
+$\{T \rightarrow T, F \rightarrow F\}$? Yes, identity for booleans. What about
+$\{T \rightarrow T, F \rightarrow T\}$? No.
+
+It's proven that the task is indecidable.
+
+\section{Equations}
+\begin{prooftree}
+ \AxiomC{}
+ \AxiomC{}
+ \BinaryInfC{$M=M$}
+ %\DisplayProof
+\end{prooftree}
+
+\begin{prooftree}
+ \AxiomC{$M=N$}
+ \AxiomC{$M=P$}
+ \BinaryInfC{$M=P$}
+ %\DisplayProof
+\end{prooftree}
+
+\begin{prooftree}
+ \AxiomC{N=M}
+ \UnaryInfC{M=N}
+\end{prooftree}
+
+It were equivalence relations
+
+\begin{prooftree}
+ \AxiomC{$M=M'$}
+ \AxiomC{$N=N'$}
+ \BinaryInfC{$MN=M'N'$}
+\end{prooftree}
+
+\begin{prooftree}
+ \AxioM{M=M'}
+ \UnaryInfC{$\lambda x . M = \lambda x . M'$}
+\end{prooftree}
+
+It were congruence rules.
+
+\begin{prooftree}
+ \AxioM{}
+ \UnaryInfC{$\lambda x . M = M[N/x]$}
+\end{prooftree}
+
+$\beta$-reduction.
+
+\begin{prooftree}
+ \AxiomC{$y \notin FV(M)$}
+ \UnaryInfC{$\lambda x . M = \lambda y . M[y/x]$}
+\end{prooftree}
+$\alpha$-conversion
+
+
+\begin{prooftree}
+ \AxiomC{$x \notin FV(M)$}
+ \AxiomC{$M: \sigma \rightarrow \tau$}
+ \BinaryInfC{$M = \lambda x^\tau . M x $}
+\end{prooftree}
+$\eta$-something
+
+
+Are thiese rules correct?
+
+Are this rules complete? (Yes, proved by Fridman).
+
+\paragraph{}
+Want: if $M=N$ can be defined then $\sem{M}{\rho} = \llbracket N \rrbracket_\varrho$ for any $A_i$  and any $\varrho$
+
+After that equivalence and congruence rules are become trivial.
+
+Let's prove that other axioms are OK, (not really weird, sanely chosen ot something like tath).
+
+
+
+$\llbracket (\lambda x .M)N\rrbracket _\varrho$ =
+$\llbracket (\lambda x .M)\rrbracket_\varrho (\llbracket N\rrbracket_\varrho)$ =
+$(a \mapsto \llbracket M\rrbracket\varrho[x->a]) (\llbracket N\rrbracket_\varrho)$ =
+$\llbracket M \rrbracket _\varrho [x -> \llbracket N\rrbracket_\varrho]$ 
+
+
+(Capture avoiding) Substituition Lemma.
+$\llbracket M[N/x\rrbracket_\rho = \llbracket M\rrbracket_{\varrho
+[x \mapsto \llbracket N\rrbracket_\rho]}$
+
+% тут снова картинка чтобы показать композиционность
+
+%байка про то, как в лиспе неправильно сделано подстановки, а Схема всё поправила.
+% when you write function it may contain free variable. When we use it later on, LISP
+% looks for it in the environment where we use this function
+\begin{enumerate}
+\item $x[N/x] := N$
+\item $y[N/x] := y, y \neq x$
+\item $(PM)[N/x] := (P[N/x]) (M[N/x])$
+\item $(\lambda x . M)[N/x] := (\lambda x . M)$
+\item $(\lambda y . M)[N/x] := (\lambda y . M)[N/x]$ when $y \not\in FV(N)$
+\item $(\lambda y . M)[N/x] := \lambda z . (M[z/y])[N/x]$ when $y \in FV(N), z \not\in FV(N) \cup FV(M) \cup \{x\}$
+\end{enumerate}
+
+Proofs
+\begin{enumerate}
+ \item obvious :)
+ \item obvious :)
+ \item obvious :)
+ \item 
+ \item The 5th case:
+
+when $y \not\in FV(N)$
+
+$(\lambda y . M)[N/x] = (a \mapsto \llbracket  M[N/x] \rrbracket_{\varrho[y \mapsto a]})$
+
+using lemma hypothesis
+
+$ = (a \mapsto \llbracket M\rrbracket_{\varrho[y \mapsto a, x \mapsto \llbracket [N/x] \rrbracket_{\varrho[z \mapsto a] }]}$
+
+
+\item 
+Now we will prove for the most difficult case (6th) ($\alpha$-equivalence) and others will be exercises.
+
+$\llbracket \lambda z . M[z/y][N/x]\rrbracket_\varrho = (a \mapsto 
+ \llbracket  M[z/y][N/x] \rrbracket_{\varrho[z \mapsto a]})$
+
+using lemma hypothesis
+ 
+$ = (a \mapsto \llbracket M[z/y]\rrbracket_{\varrho[z \mapsto a, x \mapsto \llbracket N \rrbracket_{\varrho[z \mapsto a] }]})$
+
+symplify
+
+$(a \mapsto \llbracket M[z/y]\rrbracket_{\varrho[z \mapsto a, x \mapsto \llbracket N \rrbracket_\varrho ]})$
+
+by hypothesis
+
+$(a \mapsto \llbracket M\rrbracket_{\varrho[z \mapsto a, x \mapsto \llbracket N \rrbracket_\varrho,y \mapsto\llbracket z\rrbracket_{\rho[z \mapsto a, x \mapsto \llbracket N\rrbracket]_\varrho ]}})$
+
+symplify
+
+$(a \mapsto \llbracket M\rrbracket_{\varrho[z \mapsto a, x \mapsto \llbracket N \rrbracket_\varrho,y \mapsto a]})$
+
+symplify
+
+$(a \mapsto \llbracket M\rrbracket_{\varrho[         x \mapsto \llbracket N \rrbracket_\varrho,y \mapsto a]})$
+
+by definition
+$\llbracket \lambda y M \rrbracket_{\rho[x \mapsto \llbracket N\rrbracket_\rho]}$
+
+\end{enumerate}
+
+
+
+Some observations
+
+Lambda-calculus doesn't specify what exactly $i$ is. We can suppose that $A_i=\emptyset$. Then
+$A_{i\rightarrow i} = A_i^{A_i} = \{ \emptyset \}$ which is a set of size 1. $A_{(i\rightarrow i)\rightarrow i} = { \emptyset }$. i.e. cardinality $|A_{(i\rightarrow i)\rightarrow i} | = 0 $.
+
+Do we have any other ways to construct $A_i$ to be able to construct lambda terms?
+
+$\lambda$-calculus is a way to write intuitionistic proofs when we have logic with only implication. 
+ $(\phi \rightarrow \phi)\rightarrow \phi$ is a tautology
+
+But when we use empty set as $A_i$ we can get a \textit{classical} tautology which is not describably by $\lambda$-term.
+
+\subsection{}
+We need a one thing for completeness proof.
+
+Completeness: If forall $A_i$ andnd all $\rho$: $\sem{M}{\rho}$ then $M=N$ in 
+$\alpha,\beta\eta$ sense.
+
+Fridman's compeleteness theorem
+If for $A_i=NN$ andnd all $\rho$: $\sem{M}{\rho}$ then $M=N$ in 
+$\alpha,\beta\eta$ sense.
+
+For finite set we can get lambda-terms which will not be $\alpha,\beta\eta$ equivalent. There is not enough room for terms.
+
+It's rather difficult to proof Fridman's theorem straightforwardly.
+
+\subsection{Henkin model for $\lambda$-calculus}
+$A_{\sigma \rightarrow \tau} \subseteq {A_\tau}^{A_\sigma}$
+
+Let's define sematics for application
+$\sem{MN}{\rho} = \sem{M}{\rho}(\sem{N}{\rho})$
+
+$\sem{\lambda x . M}{\rho} = (a \mapsto \sem{M}{\rho[x \mapsto a]}$ which is $A_\sigma \rightarrow A_\tau$
+The problem is that right part can be not in the chosen subset. And It's difficult to check because the set has infinite size.
+
+Let's suppose that $A_i$ is partially ordered set and
+$A_{\sigma \rightarrow \tau} = \{ f: A_\sigma \rightarrow A_\tau | 
+\forall x <= y \in A_\sigma f(x) <= f(y)\}$
+we take all monotone functions and in this case the problem does not occur (prove is an exercise).
+
+At least the things we chosen should behave as functions, we need to be able to apply them.
+$\forall \sigma, \tau app_{\sigma,\tau} : A_{\sigma \rightarrow \tau} \times A_{\sigma} 
+\rightarrow A_{\tau}$
+
+Extensibility: $\forall f,g \in A_{\tau \rightarrow \tau} (\forall x \in A_{\sigma}: app(f,x) = app(g,x)) \Rightarrow f = g$, i.e. functions are the same if they behave the same.
+
+$forall \sigma,\tau: ab_{\sigma,\tau} {A_\tau}^{A_\sigma} \rightharpoonup A_{\sigma \rightarrow \tau}$ (surjection).
+
+$app (ab(f), x) = f(x)$
+
+let $f: f: A_{\sigma} \rightarrow A_{\tau}, g \in A_{\sigma \rightarrow \tau}, 
+(\forall x \in A_{\sigma} f(x) = app(g,x)) \Rightarrow ab(f) = g$
+
+\end{document}
