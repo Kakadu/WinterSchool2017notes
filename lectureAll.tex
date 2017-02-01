@@ -2,20 +2,25 @@
 \usepackage[utf8]{inputenc}
 \usepackage{textcomp}
 \usepackage{bussproofs}
-%\usepackage{amssymb}
+\usepackage{amsmath}
 \usepackage{stmaryrd}
 
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
 %\newcommand{\llbracket}{ \llbracket }
 \newcommand{\sem}[2]{ \llbracket#1\rrbracket_{#2} }
 %\AxiomC{$M=M'$}  
 \newcommand{\AxioM}[1]{ \AxiomC{$#1$} }
 \newcommand{\rarr}{ \rightarrow }
-
 %\usepackage{fontspec}
 %\setmainfont[Ligatures={TeX,Common}]{Linux Libertine O}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\geometry{margin=10mm}
 
 \renewcommand{\tt}{ tt }
 \newcommand{\ff}{ ff }
+
 \begin{document}
 
 Dana Scott:  A type-theoretic alternative to ISWIM, CUCH and OWHY (1969, published my TCS in 1993).
@@ -43,13 +48,14 @@ And this new math started from teaching sets in schoold as basis of mathematics}
 Kesarev loh
 \chapter{Simply typed $\lambda$-calculus}
 
-Types: $\sigma ::= i | \sigma -> \sigma$
+Types: $\sigma ::= i | \sigma \rarr \sigma$
 
-We denote translation as $\llbracket \cdot \rrbracket$.
+We denote translation as $\sem{\cdot}{}$.
 
-Semantic branckets: $\llbracket i \rrbracket = A_{\tau}^{A_\sigma} = A_i $, 
+Semantic brackets: $\sem{i}{} = A_{\tau}^{A_\sigma} = A_i $, 
 where $i$ is a syntax object and $A$ is arbitrary set.
 
+\paragraph{}
 Grammar (in Church-style\footnote{In Curry-style variable have no types}): 
 \begin{itemize}
  \item terms $M ::= x | MM | \lambda x . M$
@@ -64,19 +70,21 @@ $\llbracket i -> \tau \rrbracket = \{all (total) functions form A_\sigma to A_\t
 where functions are subsets of pairs  from $A_\sigma \times A_\tau$.
 
 % Тут полный пиздец с правилами
+\begin{prooftree}
 \AxiomC{}
 \UnaryInfC{$x^\sigma : \sigma $}
-\DisplayProof
+\end{prooftree}
 
-\AxiomC{$M : \sigma -> \tau$} 
+\begin{prooftree}
+\AxiomC{$M : \sigma \rarr \tau$} 
 \AxiomC{$N: \sigma$} 
 \BinaryInfC{$MN : \tau$}
-\DisplayProof
+\end{prooftree}
 
-\AxiomC{$M: \tau$}
+\begin{prooftree}\AxiomC{$M: \tau$}
 \AxiomC{}
-\BinaryInfC{$\lambda x^\sigma: M : \sigma -> \tau$}
-\DisplayProof
+\BinaryInfC{$(\lambda x^\sigma . M) : \sigma \rarr \tau$}
+\end{prooftree}
 
 
 
@@ -88,25 +96,27 @@ We need derivation trees to be sure.
 % Тут картинка которую я пока не умею рисовать в техе. Отлично, можно отдохнуть.
 Another approach instead of derivation is DeBruijn indexes.
 
+\begin{prooftree}
 \AxiomC{}
 \AxiomC{$\llbracket M\rrbracket \in A_\sigma$}
-\BinaryInfC{$\llbracket x^\sigma\rrbracket_\varrho = \varrho(x)\}
-and \varrho : Var -> Union A_\sigma for all \sigma \in \Pi$}
-\DisplayProof
+\BinaryInfC{$\llbracket x^\sigma\rrbracket_\rho = \rho(x)\}$
+and $\rho : Var \rarr Union A_\sigma$ $\forall \sigma \in \Pi$}
+\end{prooftree}
 
-\AxiomC{$\llbracket MN\rrbracket_\varrho = \llbracket M\rrbracket\varrho (\llbracket N\rrbracket\varrho)$}
+\begin{prooftree}
+\AxiomC{$\llbracket MN\rrbracket_\rho = \llbracket M\rrbracket\rho (\llbracket N\rrbracket\rho)$}
 \AxiomC{}
 \BinaryInfC{}
-\DisplayProof
+\end{prooftree}
 
-Where $\llbracket M\rrbracket_\varrho \in {A_\tau}^{A_\tau}$ etc
+Where $\llbracket M\rrbracket_\rho \in {A_\tau}^{A_\tau}$ etc
 
-$\llbracket \lambda x^\sigma . M\rrbracket_\varrho = (a \mapsto \llbracket M\rrbracket_\varrho[x \mapsto a] = lambda a [M]\varrho[x \mapsto a]$
+$\sem{\lambda x^\sigma . M}{\rho} = (a \mapsto \sem{M}{\rho_{[x \mapsto a]}}) = lambda a [M]\rho[x \mapsto a]$
 
-$\varrho[x \mapsto a] \varrho(a) when x =/= y$
+$\rho[x \mapsto a] \rho(a)$ when $x \neq y$
 
-Proposition. If M is well-typed of type $\sigma$ then $\llbracket M\rrbracket_\varrho \in
-A_\sigma$ where $\varrho$ is a var. environment
+Proposition. If M is well-typed of type $\sigma$ then $\llbracket M\rrbracket_\rho \in
+A_\sigma$ where $\rho$ is a var. environment
 
 \subsection{lemma}
 % тут лемма
@@ -191,7 +201,7 @@ Are thiese rules correct?
 Are this rules complete? (Yes, proved by Fridman).
 
 \paragraph{}
-Want: if $M=N$ can be defined then $\sem{M}{\rho} = \llbracket N \rrbracket_\varrho$ for any $A_i$  and any $\varrho$
+Want: if $M=N$ can be defined then $\sem{M}{\rho} = \llbracket N \rrbracket_\rho$ for any $A_i$  and any $\rho$
 
 After that equivalence and congruence rules are become trivial.
 
@@ -199,14 +209,14 @@ Let's prove that other axioms are OK, (not really weird, sanely chosen ot someth
 
 
 
-% $\llbracket (\lambda x .M)N\rrbracket _\varrho$ =
-% $\llbracket (\lambda x .M)\rrbracket_\varrho (\llbracket N\rrbracket_\varrho)$ =
-% $(a \mapsto \llbracket M\rrbracket\varrho[x->a]) (\llbracket N\rrbracket_\varrho)$ =
-% $\llbracket M \rrbracket _\varrho [x -> \llbracket N\rrbracket_\varrho]$ 
+% $\llbracket (\lambda x .M)N\rrbracket _\rho$ =
+% $\llbracket (\lambda x .M)\rrbracket_\rho (\llbracket N\rrbracket_\rho)$ =
+% $(a \mapsto \llbracket M\rrbracket\rho[x->a]) (\llbracket N\rrbracket_\rho)$ =
+% $\llbracket M \rrbracket _\rho [x -> \llbracket N\rrbracket_\rho]$ 
 
 
 (Capture avoiding) Substituition Lemma.
-$\llbracket M[N/x\rrbracket_\rho = \llbracket M\rrbracket_{\varrho
+$\llbracket M[N/x\rrbracket_\rho = \llbracket M\rrbracket_{\rho
 [x \mapsto \llbracket N\rrbracket_\rho]}$
 
 % тут снова картинка чтобы показать композиционность
@@ -233,38 +243,38 @@ Proofs
 
 when $y \not\in FV(N)$
 
-$(\lambda y . M)[N/x] = (a \mapsto \llbracket  M[N/x] \rrbracket_{\varrho[y \mapsto a]})$
+$(\lambda y . M)[N/x] = (a \mapsto \llbracket  M[N/x] \rrbracket_{\rho[y \mapsto a]})$
 
 using lemma hypothesis
 
-$ = (a \mapsto \llbracket M\rrbracket_{\varrho[y \mapsto a, x \mapsto \llbracket [N/x] \rrbracket_{\varrho[z \mapsto a] }]}$
+$ = (a \mapsto \llbracket M\rrbracket_{\rho[y \mapsto a, x \mapsto \llbracket [N/x] \rrbracket_{\rho[z \mapsto a] }]}$
 
 
 \item 
 Now we will prove for the most difficult case (6th) ($\alpha$-equivalence) and others will be exercises.
 
-$\llbracket \lambda z . M[z/y][N/x]\rrbracket_\varrho = (a \mapsto 
- \llbracket  M[z/y][N/x] \rrbracket_{\varrho[z \mapsto a]})$
+$\llbracket \lambda z . M[z/y][N/x]\rrbracket_\rho = (a \mapsto 
+ \llbracket  M[z/y][N/x] \rrbracket_{\rho[z \mapsto a]})$
 
 using lemma hypothesis
  
-$ = (a \mapsto \llbracket M[z/y]\rrbracket_{\varrho[z \mapsto a, x \mapsto \llbracket N \rrbracket_{\varrho[z \mapsto a] }]})$
+$ = (a \mapsto \llbracket M[z/y]\rrbracket_{\rho[z \mapsto a, x \mapsto \llbracket N \rrbracket_{\rho[z \mapsto a] }]})$
 
 symplify
 
-$(a \mapsto \llbracket M[z/y]\rrbracket_{\varrho[z \mapsto a, x \mapsto \llbracket N \rrbracket_\varrho ]})$
+$(a \mapsto \llbracket M[z/y]\rrbracket_{\rho[z \mapsto a, x \mapsto \llbracket N \rrbracket_\rho ]})$
 
 by hypothesis
 
-$(a \mapsto \llbracket M\rrbracket_{\varrho[z \mapsto a, x \mapsto \llbracket N \rrbracket_\varrho,y \mapsto\llbracket z\rrbracket_{\rho[z \mapsto a, x \mapsto \llbracket N\rrbracket]_\varrho ]}})$
+$(a \mapsto \llbracket M\rrbracket_{\rho[z \mapsto a, x \mapsto \llbracket N \rrbracket_\rho,y \mapsto\llbracket z\rrbracket_{\rho[z \mapsto a, x \mapsto \llbracket N\rrbracket]_\rho ]}})$
 
 symplify
 
-$(a \mapsto \llbracket M\rrbracket_{\varrho[z \mapsto a, x \mapsto \llbracket N \rrbracket_\varrho,y \mapsto a]})$
+$(a \mapsto \llbracket M\rrbracket_{\rho[z \mapsto a, x \mapsto \llbracket N \rrbracket_\rho,y \mapsto a]})$
 
 symplify
 
-$(a \mapsto \llbracket M\rrbracket_{\varrho[         x \mapsto \llbracket N \rrbracket_\varrho,y \mapsto a]})$
+$(a \mapsto \llbracket M\rrbracket_{\rho[         x \mapsto \llbracket N \rrbracket_\rho,y \mapsto a]})$
 
 by definition
 $\llbracket \lambda y M \rrbracket_{\rho[x \mapsto \llbracket N\rrbracket_\rho]}$
@@ -635,30 +645,33 @@ There were names in the PCF, so we can't write \verb=let rec ...=. That's why we
 
 Also we need $... | \\ff | \\tt | 0$ as terms
 
-Now we declare rewrite rules as Plotkin did.
+Now we declare rewrite rules as Plotkin did (It is very brief description, which can be not full
+and contain errors both because the lecturer bieleved that we all know this stuff and that
+the function between what he said and \LaTeX    sometimes returns $\bot$.
+
 \begin{prooftree}
  \AxiomC{$ $}
  \AxiomC{$ $}
- \BinaryInfC{$ zero? 0 \rarr \tt$}
+ \BinaryInfC{zero? $0 \rarr \tt$}
 \end{prooftree}
 
 \begin{prooftree}
  \AxiomC{$ $}
  \AxiomC{$ $}
- \BinaryInfC{$ if \tt M N \rarr M$}
+ \BinaryInfC{if $\tt M N \rarr M$}
 \end{prooftree}
 
 \begin{prooftree}
  \AxiomC{$ $}
  \AxiomC{$ $}
- \BinaryInfC{$ if \ff M N \rarr N$}
+ \BinaryInfC{if $\ff M N \rarr N$}
 \end{prooftree}
 
 
 \begin{prooftree}
  \AxiomC{$ $}
  \AxiomC{$ P \rarr P'$}
- \BinaryInfC{$ if P M N \rarr if P' M N$}
+ \BinaryInfC{if $P M N \rarr if P' M N$}
 \end{prooftree}
 
 \begin{prooftree}
@@ -683,7 +696,7 @@ Call-by-name as in Haskell:
 \begin{prooftree}
  \AxiomC{$ $}
  \AxiomC{$ $}
- \BinaryInfC{$ zero? (k+1) \rarr \ff$}
+ \BinaryInfC{$zero? (k+1) \rarr \ff$}
 \end{prooftree}
 
 \begin{prooftree}
@@ -695,11 +708,12 @@ Call-by-name as in Haskell:
 \begin{prooftree}
  \AxiomC{$ $}
  \AxiomC{$ $}
- \BinaryInfC{$ succ k \rarr k+1$}
+ \BinaryInfC{$succ$ $k \rarr k+1$}
 \end{prooftree}
 
 There we do not reduce under lambda because we do not have congruence rules.
 
+Now and example of a factorial to demonstrate that the order where we apply reductions matter.
 \begin{verbatim}
 letrec f = \x -> if zero? x then 1 else f(pred x) * x
 
@@ -714,15 +728,12 @@ M[Y(\f . M(f))] 2
 if zero? 2 then  1 else (Y(\f . M))(pred 2) * 2
 \end{verbatim}
 
-Let's look at $Y_{int}: (int->\int) -> int$
-
-$succ (Y succ)$
-
-$succ (succ (Y succ))$
-
-and recursion to infinity. But we know that to get complete calculus we need to allow partial 
+Let's look at $Y_{int}: (int\rarr int) \rarr int$. Let's evaluate application of $Y$ to $succ$:
+$succ (Y succ)$, $succ (succ (Y succ))$, ... and recursion to infinity. 
+But we know that to get complete calculus we need to allow partial 
 functions. So we do not say here about total functions.
 
+\paragraph{}
 Semantics of types: $\sem{bool}{} = \{\tt, \ff\} = B$, $\sem{int}{} = \{0, 1, ...\} = N$.
 
 Sematics for terms : $\sem{M}{\rho} $ as before
@@ -736,17 +747,28 @@ definable functions. $Y$ of identity exists but $Y$ applied to $succ$ did not co
 %%%%%%%%% some questions about primitive recursion vs. Y-combinators
 
 And about $\mu$-recursion.
-
-$g(a_1,...,a_n) = \mu f = \Big\{ \frac{min n\in N, s.t. f(n,a_1,...,a_n)=0}{undefined else}$
+ \[
+    g(a_1,...,a_n)=\left\{
+                \begin{array}{ll}
+                  \text{min } n\in N, \text{s.t.} f(n,a_1,...,a_n)=0\\
+                  \text{undefined else}
+                \end{array}
+              \right.
+  \]
+  
+  
+  
+%$g(a_1,...,a_n) = \mu f = \Big\{ \frac{min n\in N, s.t. f(n,a_1,...,a_n)=0}{undefined else}$
 
 Exercise to express $\mu$ in PCF.
 Solution.
 \begin{verbatim}
  let rec min = \f . \x . \a . if zero? f x a then x else min f (succ x) a
 \end{verbatim}
-Но я не понял почему f от 0 завершается. То ли она тотальна, то ли примитивно-рекурсивна.
+% Но я не понял почему f от 0 завершается. То ли она тотальна, то ли примитивно-рекурсивна.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{}
 Now we will try to define semantics for PCF.
 We kind of need to have an element to denote ``no value''. We will call it bottom: $\bot$.
 
@@ -754,9 +776,10 @@ bool :   true  false
            \    /
             $\bot$
             
-Now we will describe functions in $\sem1{bool}$ which have 27 functions (as functions from 3
+\paragraph{}
+Now we will describe functions in $\sem{bool}{}$ which have 27 functions (as functions from 3
 element set to 3 element set). But we do not want semantics to explode. We want to say that 
-many functions are not realistics and we do it by adding order to the set. Let's describe 
+many functions are not realistic and we do it by adding order to the set. Let's describe 
 \textit{monotone} functions in this set .
 
 % we use derivations trees to draw a graph
@@ -773,7 +796,7 @@ functions that goes from $\bot$ to $\bot$ as \textit{strict}.
 Now 
 $\sem{int \rarr int}{}$ has infinitely many and uncountable. That means that there some functions
 in semantics that are undefinable. In STLC we get infinite in the power of infinity, etc... (terrible 
-infinity) but in PC the infinity doesn't grow (This is respect to PCF and not to domain theory otself).
+infinity) but in PCF the infinity doesn't grow (This is respect to PCF and not to domain theory otself).
 
 Let's look at partial function $f: N \rightharpoonup N$ we can alsways convert it got 
 $f': N_\bot \rightharpoonup N_\bot$. What the order will be here?
@@ -810,7 +833,10 @@ So, if Ff returns a value, it was defined on the chain.
 
 Def. F is Scott-continious if for all chains  $f_0 < f_1 < f_2 < ...$
 the $V F(f_n) = F(Vf_n)$ for all n$\in N$.
-
+\begin{definition}{Scott-continious.}
+F is Scott-continious if for all chains  $f_0 < f_1 < f_2 < ...$
+the $V F(f_n) = F(Vf_n)$ for all n$\in N$.
+\end{definition}
 N.B. it can be $\leq$ in the chain but it will make more difficult reasoning. There we
 the notion of непрерывности but for isolated input.
 
@@ -828,8 +854,11 @@ So, we restricted monotone function to continious ones.
 
 We did all of that because of we didn't get a fix-points in the original model. Let's do this.
 
-Theorem. $D$ is CPO and $f: D \rarr D$ is Scott-continious . Then $f$ has a least fixpoint.
-Proof. 
+
+\begin{theorem}
+$D$ is CPO and $f: D \rarr D$ is Scott-continious . Then $f$ has a least fixpoint.
+\end{theorem}
+\begin{proof}
 $\bot \leq f(\bot)$. Now we apply $f$ to both sides, and order will be preserved.
 
 $f(\bot) \leq  f(f(\bot))$. So we get a chain
@@ -854,8 +883,8 @@ Now proof claim2:
  $\bot \leq a = f(a)$
  $f(\bot) \leq f(a) = a$.
  $f^2(\bot) \leq a$.  So we showed a fixpoint which is a least fixpoint.
- 
-End.
+.
+\end{proof}
 
 $\sem1{Y}$ where Y has type $(\sigma\rarr\sigma)\rarr\sigma$,
 $\sem1{Y} = (f \mapsto V f^n(\bot)$
@@ -866,6 +895,7 @@ should stuck in monotone functions and in CPOs.
 Some long speach about there are very low count of categories that are with this properties.
 
 End of the day 3.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{prooftree}
  \AxiomC{$ $}
