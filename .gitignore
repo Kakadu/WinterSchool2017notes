@@ -1,0 +1,7 @@
+*.dvi
+*.pdf
+*.aux
+*.log
+*.backup
+*.swp
+

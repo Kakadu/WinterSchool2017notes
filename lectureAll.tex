@@ -9,6 +9,13 @@
 \newcommand{\sem}[2]{ \llbracket#1\rrbracket_{#2} }
 %\AxiomC{$M=M'$}  
 \newcommand{\AxioM}[1]{ \AxiomC{$#1$} }
+\newcommand{\rarr}{ \rightarrow }
+
+%\usepackage{fontspec}
+%\setmainfont[Ligatures={TeX,Common}]{Linux Libertine O}
+
+\renewcommand{\tt}{ tt }
+\newcommand{\ff}{ ff }
 \begin{document}
 
 Dana Scott:  A type-theoretic alternative to ISWIM, CUCH and OWHY (1969, published my TCS in 1993).
@@ -575,6 +582,290 @@ The proof for >2 we need ''improved logical relations``. But there is a paper ab
 
 Theorem [Loader`93]. The $\lambda$-definability problem is undecidable.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{day 3}
+
+Now we will got closer to computers and computable functions.
+
+Some historic perspective.
+
+Computable functions: $N \rightharpoonup N$ (Turing). Only nubers matters.
+
+In 1950s we got Fortran. In 1956 Algol community firstly met, Algol58 was the academic language,
+the Algol60 became 1st public knowing language. Algol68 become less pwerful than Algol60.
+Formal description of the language was semantics and denotational semantics is one of approaches.
+
+Stratchey, Landin: denotational semantics  as translation into untyped $\lambda$-calculus.
+Dana Scott knowed all the problems of untyped lambda calculusbut still lambda-calculus was not 
+completely unreasonable. But Scott still said that it is not right to convert something to the 
+thing you can't understand. STLC is OK in this question but is not suitable for writing computable 
+functions. So he extended it to LCF. Initially he did not know that will be treated as a language.
+
+Scott (69): typed lambda calculus
+Plotkin(76): LCF considered as a programming language.
+
+LCF -- Logic of Computable Functions.
+
+PL language converted with this approach is known as PCF but it was known as language wher ewe give 
+names to set-theoretic functions. The theory of recursion was alrady very sophisticated but
+Scott's approach is original: defining functions in domains.
+
+% Platek had a thesis about recursion. It was very sphisticated and ungooglable.
+
+\subsection{PCF}
+
+Types: $\sigma ::= bool | i  | ...$ (where $i$ is $\iota$). The $\iota$ was initially for ''individuals``
+but people think that as numbers (natural or real).
+
+$\sigma ::= bool | i | \sigma -> \sigma$.
+
+Terms: Scott added logical types (for bools) and other types (where for example axioms about successor
+depend on the choice of $\iota$).
+
+Terms: $M ::= x | MM | \lambda x . M | If: bool -> \sigma  -> \sigma  -> \sigma | .... $
+
+Also $|succ | pred | zero? |...$ for logical types. And he said that ''he can't add assignment to language" :)
+
+So he added $ | Y $.
+
+The type of Y-combinator : $Y_\sigma : (\sigma \rightarrow \sigma) \rightarrow \sigma$.
+
+
+There were names in the PCF, so we can't write \verb=let rec ...=. That's why we need Ys-combinator.
+
+Also we need $... | \\ff | \\tt | 0$ as terms
+
+Now we declare rewrite rules as Plotkin did.
+\begin{prooftree}
+ \AxiomC{$ $}
+ \AxiomC{$ $}
+ \BinaryInfC{$ zero? 0 \rarr \tt$}
+\end{prooftree}
+
+\begin{prooftree}
+ \AxiomC{$ $}
+ \AxiomC{$ $}
+ \BinaryInfC{$ if \tt M N \rarr M$}
+\end{prooftree}
+
+\begin{prooftree}
+ \AxiomC{$ $}
+ \AxiomC{$ $}
+ \BinaryInfC{$ if \ff M N \rarr N$}
+\end{prooftree}
+
+
+\begin{prooftree}
+ \AxiomC{$ $}
+ \AxiomC{$ P \rarr P'$}
+ \BinaryInfC{$ if P M N \rarr if P' M N$}
+\end{prooftree}
+
+\begin{prooftree}
+ \AxiomC{$ $}
+ \AxiomC{$ P \rarr P'$}
+ \BinaryInfC{$ zero? P \rarr zero? P'$}
+\end{prooftree}
+
+\begin{prooftree}
+ \AxiomC{$ $}
+ \AxiomC{$ M \rarr M' $}
+ \BinaryInfC{$ MN  \rarr MN'$}
+\end{prooftree}
+
+Call-by-name as in Haskell:
+\begin{prooftree}
+ \AxiomC{$ $}
+ \AxiomC{$ $}
+ \BinaryInfC{$ (\lambda x . M) N \rarr M[N/x]$}
+\end{prooftree}
+
+\begin{prooftree}
+ \AxiomC{$ $}
+ \AxiomC{$ $}
+ \BinaryInfC{$ zero? (k+1) \rarr \ff$}
+\end{prooftree}
+
+\begin{prooftree}
+ \AxiomC{$ $}
+ \AxiomC{$ $}
+ \BinaryInfC{$ YM \rarr M(YM)$}
+\end{prooftree}
+
+\begin{prooftree}
+ \AxiomC{$ $}
+ \AxiomC{$ $}
+ \BinaryInfC{$ succ k \rarr k+1$}
+\end{prooftree}
+
+There we do not reduce under lambda because we do not have congruence rules.
+
+\begin{verbatim}
+letrec f = \x -> if zero? x then 1 else f(pred x) * x
+
+we will write `\x -> if zero? x then 1 else f(pred x) * x` as M
+Y(\f  \x -> if zero? x then 1 else f(pred x) * x ) : (int->int) -> (int->int)
+
+Y(\f . M(f)) 2
+(\f . M(f)) (Y(\f . M(f))) 2
+now \beta step
+M[Y(\f . M(f))] 2
+\beta
+if zero? 2 then  1 else (Y(\f . M))(pred 2) * 2
+\end{verbatim}
+
+Let's look at $Y_{int}: (int->\int) -> int$
+
+$succ (Y succ)$
+
+$succ (succ (Y succ))$
+
+and recursion to infinity. But we know that to get complete calculus we need to allow partial 
+functions. So we do not say here about total functions.
+
+Semantics of types: $\sem{bool}{} = \{\tt, \ff\} = B$, $\sem{int}{} = \{0, 1, ...\} = N$.
+
+Sematics for terms : $\sem{M}{\rho} $ as before
+
+$\sem{zero?}{} \in B^N$
+
+$\sem{YM}{} = \sem{M(YM)}{} = \sem{M}{} (\sem{YM}{})$
+Observation, $\sem{YM}{}$ must be a fixpoint of the $\sem{M}{}$. $Y$ should produce fixpoint for every 
+definable functions. $Y$ of identity exists but $Y$ applied to $succ$ did not converge.
+
+%%%%%%%%% some questions about primitive recursion vs. Y-combinators
+
+And about $\mu$-recursion.
+
+$g(a_1,...,a_n) = \mu f = \Big\{ \frac{min n\in N, s.t. f(n,a_1,...,a_n)=0}{undefined else}$
+
+Exercise to express $\mu$ in PCF.
+Solution.
+\begin{verbatim}
+ let rec min = \f . \x . \a . if zero? f x a then x else min f (succ x) a
+\end{verbatim}
+Но я не понял почему f от 0 завершается. То ли она тотальна, то ли примитивно-рекурсивна.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Now we will try to define semantics for PCF.
+We kind of need to have an element to denote ``no value''. We will call it bottom: $\bot$.
+
+bool :   true  false
+           \    /
+            $\bot$
+            
+Now we will describe functions in $\sem1{bool}$ which have 27 functions (as functions from 3
+element set to 3 element set). But we do not want semantics to explode. We want to say that 
+many functions are not realistics and we do it by adding order to the set. Let's describe 
+\textit{monotone} functions in this set .
+
+% we use derivations trees to draw a graph
+
+$\sem{bool}{} = B_\bot$
+
+Now for natural numbers. Picture.
+
+$\sem{int}{} = N_\bot$ 
+
+The only way to define succ OK is when $\bot$ goes to $\bot$ because of monotonicity. Let's call
+functions that goes from $\bot$ to $\bot$ as \textit{strict}.
+
+Now 
+$\sem{int \rarr int}{}$ has infinitely many and uncountable. That means that there some functions
+in semantics that are undefinable. In STLC we get infinite in the power of infinity, etc... (terrible 
+infinity) but in PC the infinity doesn't grow (This is respect to PCF and not to domain theory otself).
+
+Let's look at partial function $f: N \rightharpoonup N$ we can alsways convert it got 
+$f': N_\bot \rightharpoonup N_\bot$. What the order will be here?
+
+%  тут не штрихи, а черты сверху
+
+$ f \leq g: \forall x f'(x) \leq g'(x)$
+
+iff $f(x) = g(x)$ or $f(x)=\bot$. One function is better than another when ot is mpre defined that
+the other. But if function below is defined we can't change values.
+
+$c_\bot \leq \{0\mapsto 0; else \bot\}
+        \leq \{0\mapsto 0; 1\mapsto 1; else \bot\}
+        \leq .....
+        $
+        
+Now let's look at F: $(int \rarr int) \rarr something$, for example        
+$(int \rarr int) \rarr int$. First argument is all monotone functions. It also should be monotone,
+so ``if you give me better function, I will give you better result''.
+
+Now how we define it? If we are gotten a rubbish function $(\bot \rarr\bot)$ we can only return 
+just a value (say $5$). But if we get good function, we trust it and execute it so
+we can execute it only finite number of times (unless we diverge). So we will only use values of the 
+argument function only on finite number of inputs.  So, we do not need to go to the top of the 
+sequence above. I.e. in any HOF argument is used only finite number of times.
+        
+So, the $F$ is computable only if following is true:
+chain $f_0 < f_1 < f_2 < ...$ will always limit the use of f: 
+$lim F_n where n\in N = V f_n where n\in N$
+
+% здесь не V а большая галка со стрелкой вверх в правой ветке.
+
+So, if Ff returns a value, it was defined on the chain.
+
+Def. F is Scott-continious if for all chains  $f_0 < f_1 < f_2 < ...$
+the $V F(f_n) = F(Vf_n)$ for all n$\in N$.
+
+N.B. it can be $\leq$ in the chain but it will make more difficult reasoning. There we
+the notion of непрерывности but for isolated input.
+
+Def. (D, $\leq$) is CPO (complete partial order) if for every chain $a_o <= a_1 <= ...$
+there is a limit $a$: $a_n <= a$ for every $n$ and for every $b\in D$: $a_n<=b$ $a<=b$ .
+and there is a least element $\bot_D$.
+
+We had the same for $R$: supremum:
+
+So the function $F: D \rarr E$  (where $D,E$ are CPOs) is Scott-continious 
+if it is monotone and for all chains  $f_0 < f_1 < f_2 < ...$
+the $V F(a_n) = F(V a_n)$ for all n $\in N$.
+
+So, we restricted monotone function to continious ones. 
+
+We did all of that because of we didn't get a fix-points in the original model. Let's do this.
+
+Theorem. $D$ is CPO and $f: D \rarr D$ is Scott-continious . Then $f$ has a least fixpoint.
+Proof. 
+$\bot \leq f(\bot)$. Now we apply $f$ to both sides, and order will be preserved.
+
+$f(\bot) \leq  f(f(\bot))$. So we get a chain
+$\bot \leq f(\bot) \leq f(f(\bot)) \leq f(f(f(\bot))) \leq ....$. Because CPO
+
+% Мы можем рисовать кубы тут.
+
+there is a limit of this sequence. $a = Vf^n(\bot)$ where $n\in N$. 
+Claim1: $a$ is a fixpoint of $f$.
+Claim2: it is a least fixpoint
+
+Let's proof claims.
+
+$\bot \leq f(\bot) \leq f^2(\bot) \leq f^3(\bot) \leq ... Vf^n(\bot)$
+
+$f(\bot) \leq f^2(\bot) \leq f^3(\bot) \leq f^4(\bot) \leq ... Vf^n(\bot)$
+
+$f(Vf^n(\bot)) = Vf^{n+1}(\bot) = VF^n(\bot)$
+
+Now proof claim2:
+ 
+ $\bot \leq a = f(a)$
+ $f(\bot) \leq f(a) = a$.
+ $f^2(\bot) \leq a$.  So we showed a fixpoint which is a least fixpoint.
+ 
+End.
+
+$\sem1{Y}$ where Y has type $(\sigma\rarr\sigma)\rarr\sigma$,
+$\sem1{Y} = (f \mapsto V f^n(\bot)$
+
+All that we done we have done in a theoretical way without knowledge about PCF. Now we
+should stuck in monotone functions and in CPOs.
+
+Some long speach about there are very low count of categories that are with this properties.
+
+End of the day 3.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{prooftree}
  \AxiomC{$ $}
