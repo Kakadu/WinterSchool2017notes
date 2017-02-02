@@ -3,6 +3,7 @@
 \usepackage{textcomp}
 \usepackage{bussproofs}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{stmaryrd}
 
 \usepackage{amsthm}
@@ -40,12 +41,10 @@ Semantics can be
 \end{itemize}
 
 denotational semantics is often translation from programming languge to set theory. For programmers 
-langauges are ``easy`` but set theory is ``hard``.
-
-\footnote{Long very weird history about inventing ``a new math`` by americans to compete with USSR.
+langauges are ``easy`` but set theory is ``hard``.\footnote{
+Long very weird history about inventing ``a new math`` by americans to compete with USSR.
 And this new math started from teaching sets in schoold as basis of mathematics}
 
-Kesarev loh
 \chapter{Simply typed $\lambda$-calculus}
 
 Types: $\sigma ::= i | \sigma \rarr \sigma$
@@ -321,7 +320,7 @@ set has infinite size.
 
 Let's suppose that $A_i$ is partially ordered set and
 $A_{\sigma \rightarrow \tau} = \{ f: A_\sigma \rightarrow A_\tau | 
-\forall x <= y \in A_\sigma f(x) <= f(y)\}$
+\forall x \leq y \in A_\sigma f(x) leq f(y)\}$
 we take all monotone functions and in this case the problem does not occur (prove is an exercise).
 
 At least the things we chosen should behave as functions, we need to be able to apply them.
@@ -840,8 +839,8 @@ the $V F(f_n) = F(Vf_n)$ for all n$\in N$.
 N.B. it can be $\leq$ in the chain but it will make more difficult reasoning. There we
 the notion of непрерывности but for isolated input.
 
-Def. (D, $\leq$) is CPO (complete partial order) if for every chain $a_o <= a_1 <= ...$
-there is a limit $a$: $a_n <= a$ for every $n$ and for every $b\in D$: $a_n<=b$ $a<=b$ .
+Def. (D, $\leq$) is CPO (complete partial order) if for every chain $a_o \leq a_1 \leq ...$
+there is a limit $a$: $a_n\leq a$ for every $n$ and for every $b\in D$: $a_n\leq b$ $a\leq b$ .
 and there is a least element $\bot_D$.
 
 We had the same for $R$: supremum:
@@ -895,6 +894,283 @@ should stuck in monotone functions and in CPOs.
 Some long speach about there are very low count of categories that are with this properties.
 
 End of the day 3.
+
+
+Some exercises explantations
+
+\begin{itemize}
+ \item 
+ \item $f = M (f, g) : \sigma \rarr \tau$
+ 
+ $g = N(f,g) : \sigma' \rarr \tau'$
+ 
+ $Y_{\sigma' \rarr \tau'} (\lambda g . N)$
+ 
+ $Y_{\sigma \rarr \tau} (\lambda f . M[Y(\lambda g . N) / g])$
+ \item (a) ($N^T$)There is not natural number.
+   (b) Is because something about zero...
+   (c) NO, because approximation of $\sqrt{2}$ has no least upper bound.
+   (d) Yes
+ \item 1st aprt is obvious.
+ \item $f:D \rarr D$, $\bot \in D$ ccpo.
+ 
+ $C \subseteq  D$ is a chain  if $\forall x,y \in C$: $x \leq y$ or $y\leq x$.
+ 
+ Let's look at $\bot \leq f(\bot) \leq f(f(\bot)) \leq ...$ $Vf^n(\bot) = l_1$
+
+ $f(l_1) \leq f(\bot) \leq f(f(\bot)) \leq f(f(f(\bot))) \leq ...$ $Vf^n(\bot) = l_2$
+ 
+ $V l_n = l_\omega$ for $n\in N$. Now we do  sequence for $l_i$. 
+ %When we continue this  process for all 
+ Set theory says that we can't go strictly up,  so we will hit $a=f(a)$. Is it a least fixpoint?
+ $b=f(b)$. Look: $\bot \leq b$ and $f(\bot) \leq b$ .... etc. So we conclude that 
+ $V f^n(\bot) \leq b$. Wo we have a least fixpoint $a$.
+ 
+ Now an artifictial exampele where f of limit is not a limit of fs. Int topology the 
+ open intervals has a limit as closed interval. In Reals it is OK, but we can invent some topologycal
+ shit where lengths doesn't work in this way.
+ 
+ Dino Pataraia. with Escado has a paper with some proof don't sure about what.
+ 
+ \end{itemize}
+
+ 
+\section{Day 4} 
+Yesterday we switched from sets to sets with bottom attached (to have in Y-combinator 
+for every function, which is not possible in the STLC).
+we have $N_\bot$ and $B_\bot$ which are both infinite but without interesting chains.
+
+% REmembering the definition of continiousity and that every continious function has a least fixpoint.
+Now we have least fixpoint (lfp) that has type $[D\rarr D] \rarr D$. Is lfp itselft continious.
+The best thing to think about it is category theory.
+
+Cathegory CPO: objects are all CPOs, morphisms are continious functions.
+
+To switch to Henkin model we need a requirement that category is cartesian-closed.
+
+\begin{theorem}
+Lemma. CPO is cartesion-closed. 
+\end{theorem}
+\begin{proof}
+ \textbf{Concrete} product  $D\times E$ is a cpo. $(d,e) \leq (d',e') if d\leq d' and e\leq e'$.
+ 
+ Bottom $(\bot_D,\bot_E)$ $V(d_n,e-_n) = (Vd_n,Ve_n) for n \in N$
+
+ % A remark that Product of everything ffrom empty set is 1.
+ 
+ $[D\rarr E]$   $f\leq g$ if $\forall d in D$ $f(d) \leq_E g(d)$
+ 
+ $\lambda x . \bot_E$.
+ 
+ $(V f_n)(d) := Vf_n(d)$.
+ 
+ % Картинка от Вяткина. Про то, что в матане теорема неверна, потому что там мы ожидаем 
+ % чтобы лимиты слева и справа были одинаковыми. А тут мы всегда приодим слева.
+ $(V_nf_n)(V_md_m) = V_nV_m f_n(d_m) = V_mV_n f_n(d_m) = (V_mf_m)(V_nd_n)$
+\end{proof}
+ 
+ --------------------
+ 
+ $f: D \times E$ is continious iff f is componentwise continious $f(Vd_n, e) = Vf(d_n,e)$.
+ 
+ Application: $f: [D \rarr E] \times D \rarr E$ is continious.
+ 
+ $app 9vf_n,d) = (Vf_n)(d) = Vf_n(d) = Vapp(f_n,d)$ which again magically works but in 
+ analysis functions continious componentwise can be not globally continious.
+ 
+ --------------------
+
+ curry(ab): $[D\times E \rarr F] \rarr [D\rarr [E\rarr F]]$.
+ 
+ ------
+
+ composition: $[D\rarr E] \times [E \rarr F] \rarr [D\rarr F]$.
+ 
+ 
+ Now we need to show that we have Henin model here and this folows abstractly from that we  have... ?
+ 
+ lfp continious
+ 
+ $lfp(f) = V f^n(\bot)$
+ 
+ $lfp_n(f) = f^n(\bot)$ and $lfp = Vlfp_n$. let's show that $lfp_n$ are continios by inductions.
+ 
+ $lfp_0(f) = \bot$, $lfp_{n+1} = app(f, lfp_n(f))$
+ 
+ 
+ Back to lambda calculus.
+ 
+ $\sem{succ}{} : N_\bot \rarr N_\bot $ and others are cpo's. The fact that lambda abstraction is
+ show follow from that it is cartesian closed.
+ 
+ $\sem{x}{\rho}$, $\sem{MN}{\rho} = app(\sem{M}{\rho}, \sem{N}{\rho})$.
+ 
+ $\sem{\lambda x.M}{\rho} = (a \mapsto \sem{M}{\rho[x \mapsto a]}) $is continious.
+ 
+ Let's vary some component: $b_n \mapsto \sem{\lambda x.M}{\rho[y\mapsto b_n]} = 
+ (b_n \mapsto (a \mapsto \sem{M}{\rho[y\mapsto b_n][x \mapsto a]})) $ now we use curry/uncurry to change 
+ $(a \mapsto (b_n \mapsto \sem{M}{\rho[y\mapsto b_n][x \mapsto a]}))$
+ 
+ $E\rarr[A\rarr F]]$ uncrurring to $[E\times A]\rarr F$ changing order $[A\times E]\rarr F$ and 
+ curring  to $A\rarr[E\rarr F]]$
+ 
+\begin{theorem}
+ CPOs and Scott-continious functions provide a correct denotational semantics for PCF,
+ i.e. if $M\rarr M'$ then for any env. $\rho$ : $\sem{M}{\rho} = \sem{M'}{\rho}$.
+\end{theorem}
+There functions are equal if they behave equal. Folks tried to extend domain theory to 
+comlexity issues but not really succeed.
+
+\begin{proof}
+ Just go through all rules and check for everyone.
+\end{proof}
+
+Here we do not expect completness (i.e. theorem do not work in the opposite way), because it will 
+be mean that we can rewrite merge sort into quick sort by rules, but this two algoritms are completely
+different algorithms.
+
+The $\sem{\cdot}{}$ is adequate, if $\forall$ closed terms of ground type, $\sem{M}{}=n$ then
+$M \rarr* n$ in finitely many steps. D.Scott couldn't answer this question. Plotkin did it 8 years 
+laters.
+
+\begin{proof}
+ At \underline{int}: $a R_int M$, where $M$ is closed and of type \underline{int}.
+ 
+ if $a = \bot$ or $a=n$ then $M \rarr *n$.
+ 
+ Adequacy: $\sem{M}{}R_{int}M$. Now we show 4 properties of this relations to get to fundamental lemma.
+ 
+ \begin{enumerate}
+  \item $\bot_\sigma R_sigma M:\sigma$ always.
+  
+  $f R_{\sigma\rarr \tau}M$ iff $\forall a R_\sigma N$, N closed and of type $\sigma$:
+  $f(a)R_\tau MN$. PCF is   reach and we can not to go to open terms.
+  
+  Proof.
+  
+  $\bot_{\sigma\rarr \tau} R_{\sigma\rarr \tau}  M : \sigma \rarr \tau$
+  %\begin{DisplayProof}
+   %???
+  %\end{DisplayProof}
+  Qed.
+  \item [Step 2]
+  $aRM$  and $M'\rarr M$ them $aRM'$. when $a=\bot$ it is in relations. When $a$ is a number
+  then $M'\rarr M\rarr .... \rarr n$. For function type : we have $fR_{\sigma\rarr \tau}M'$ and
+  $aR_\sigma N$ we need to show $f(a) R_\tau M'N$. easy: $f(a)R_\tau M'N \rarr f(a)R_\tau MN $
+  \item[Step 3] 
+  if we have sequence chain $a_n$ and $a_nRM$ then $Va_n RM$.At ground type we do not have any 
+  chains, nothing interesting happend. Let's look at function type: 
+  $f_nR_{\sigma\rarr \tau}M \Rightarrow Vf_nRM$.
+  
+  $f_n(a)R_{\sigma\rarr \tau}MN$,  $(Vf_n)(a) = Vf_n(a) R_\tau MN$.
+  
+  \item [Step 4]
+  Need to show that for all types $\sigma$ and all $M:\sigma$: $\sem{M}{}R_\sigma M:\sigma$.
+  Wel will proof slightly stronger statement about open types.
+  
+  $\rho$, $r$ (substitution with closed terms) such tath for $\forall x$: $\rho(x)Rr(x)$, i.e.
+  $\sem{m}{\rho}R M[r]$ -- this what we are trying to show. Variable case simple. Application and
+  abstraction are similar to $\lambda$-calculus. The interesting cases are constants and $Y$-combinator.
+  
+  $m=succ N$. We assume them $\sem{M}{\rho}RN[r]: int$.
+  
+  $succ\sem{N}{\rho} = \sem{succ N}{\rho}$ and going to show $\sem{succ N}{\rho} R succ N[r]$.
+  case 1: $\sem{N}{\rho}=\bot$. case 2: $\sem{N}{\rho} = n$ then $N[r] \rarr * n$ then 
+  $succ(N[r]) \rarr* succ(n) \rarr n+1$. There we used rule for successor.
+  
+  Now we going to show that $\sem{Y}{}R_{(\sigma\rarr\sigma)\rarr \sigma}Y_\sigma$. Need to test
+  this of some $f$,$N$:that $fR_{\sigma\rarr\sigma}$ and need to show that $lfp(f)R_\sigma YN$.
+  $\bot_{\sigma}R_\sigma YN$, $f(\bot_\sigma)R_\sigma N(YN))$, and $f(\bot)R_\sigma YN$ and by 
+  induction $f^n(\bot)R_\sigma YN$  and now take supremum: $V f^n(\bot)R_\sigma YN = lfp(\bot)$
+  
+ \end{enumerate}
+
+\end{proof}
+
+we introduced order to get fixpoint but now we going to say that matter. Let's say that
+$M \lesssim_{c} M'$ when every programmer will take $M'$ instead of $M$, i.e.
+if $\forall C[]$ (ground) context $c[M] \rarr*n$ $\Rightarrow C[M']\rarr*n$. We will 
+cal it ``contextual preorder''.
+
+Want (full abstraction lemma): $M\lesssim_c M'$ iff $\sem{M}{} \leqslant \sem{M'}{}$. ``Fully abstract'' semantics.
+The Scott's semantics is not. Today we will show that right to left direction holds.
+
+\begin{theorem}[Test-Context Lemma]
+ $M \lesssim_c M': \sigma$ iff $foral P: \sigma \rarr int$: ($PM \lesssim_c PM'$ iff
+ ($PM \rarr * n \Rightarrow PM' \rarr* n$).
+ 
+\end{theorem}
+--------------------
+\begin{proof}
+ down $C[] := P[]$, up $C[] \rightsquigarrow \lambda x. C[x]=:P$
+\end{proof}
+
+ Proof of lemma.
+ $\sem{M}{} \leqslant \sem{M'}{} \Rightarrow M \lesssim_c M'$.
+ 
+ if $PM \rarr * n$ then $\sem{P}{}(\sem{M}{}) = \sem{PM}{}=n$. but 
+ $\sem{P}{}(\sem{M}{}) \leqslant \sem{P}{}(\sem{M'}{}) = n = \sem{PM'}{}$. Now by adequacy we have 
+ $PM'\rarr* n$.
+
+\begin{theorem}[Context Lemma (Milner 78)]
+ The following are equivalent for closed terms $M$,$M':\sigma$.
+ \begin{enumerate}
+  \item $M\lesssim_c M'$
+  \item $M \rarr M'$ in applicative context : we view them as functions and test them on arguments.
+  $MN_1N_2N_3 .... \rarr * n$ and $M'N_1N_2N_3 \rarr * n$.
+  \item $\sem{M}{}RM'$.
+ \end{enumerate}
+\end{theorem}
+\begin{proof}
+ \begin{itemize}
+  \item $1\rarr 2$ should be easy.
+  \item $2\rarr 3$. $\sem{M}{}RM$, $a_iRN_i$. waht $\sem{M}{}(a1)(a_2).. R_{int}MN_1N_2$. If left
+  is equal to bottom then finished. Else It converges in finitely many steps to numeral. By ass(2)
+  right part also converges to numeral
+  \item $3\rarr 1$. Want $PM \lesssim-c PM'$, by fund. lemma $\sem{P}{}RP$. and by definition of logical
+  realtions  $\sem{PM}{}R_{int}PM'$. If $PM$ converges to number thein finitely many steps to number
+  then $\sem{PM}{}=n$ and by definition of ?? $PM' \rarr * n$.
+ \end{itemize}
+
+\end{proof}
+
+Scott's model fails to be fully-abstract because there some stuff in the model that is not definalbe.
+In $bool\rarr bool$ everything is definable but in $B_\bot^2\rarr B_\bot$ not.
+Let's look at ``parallel or`` (\verb=pr=).
+$por(\ff,\ff) = \ff$,
+$por(\ff,\bot) = \tt$,
+$por(\bot,\tt) = \tt$,
+
+Observation: There is not PCF term that implements por.
+\begin{proof}
+ if PCF could do this it will be in Java
+\end{proof}
+
+The test for parallel or: $portest_{a,b} : (bool^2\rarr bool)\rarr int$. returns $a$ if it is, $b$
+when not and can diverge. Any two portests are equivalent. $\Omega$ means infinite loop.
+
+$\lambda p . if p(\ff,\ff) then \Omega else if p(\tt,\Omega) 
+    then if p(\Omega,\tt) then a else \Omega
+    else \Omega$
+    
+Por always returns $\bot$    unless we give it parallel or. In practive they all  will be $\bot$.
+But in semantics parallel or exists.
+
+Question: por is $\mu$-recursive but why we can't rewrite it in PCF. The difference is between 
+turing computation an typed computation, turing machine works on numbers.
+
+One more theorem for that day.
+
+\begin{theorem}[Plokin 77]
+ PCF + parallel or is fully abstract for the Scott model.
+\end{theorem}
+Can we independently from PCF in Scott's model decide what is computable and what is not?
+\begin{theorem}[Plotkin,77]
+ PCF+parallel or+parallel exis is computationally complete.
+\end{theorem}
+Parallel exists has type : $(int\rarr bool) \rarr bool$ and 
+$p.ex (\lambda x . \ff) = \ff$, and
+$p.ex (g) = \tt$ if exists $n: g n = \tt$
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{prooftree}
