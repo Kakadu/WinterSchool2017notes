@@ -5,6 +5,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{stmaryrd}
+\usepackage{tikzcd}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Theorem}
@@ -539,6 +540,24 @@ $\sigma \rightarrow \tau$ : $R_\sigma$,$R_\tau$ are partial surjective functions
 $R_{\sigma \rightarrow \tau}$ has properties 1 and two.
 
 % картинка из теорката.
+%\begin{equation}
+\begin{tikzcd}
+A \arrow [ r , ''f'' ]
+%  \arrow [ dr , swap , '' g \circ f'' ]
+  &
+B 
+%  \arrow [ dr , '' g \circ h '' ]
+%  \arrow [ d , swap , '' g '' ]
+%  \\
+%  {}
+  &
+C %\arrow [ r , swap , '' h '' ]
+%  &
+%D
+%  &
+\end{tikzcd}
+%\end{equation}
+
 % Продолжение каринки.
 
 Need $(f,m) \in R_{\sigma \rightarrow \tau})$. Let $(A,t) \in R_\tau$
