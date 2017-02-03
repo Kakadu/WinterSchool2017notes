@@ -1191,6 +1191,306 @@ Parallel exists has type : $(int\rarr bool) \rarr bool$ and
 $p.ex (\lambda x . \ff) = \ff$, and
 $p.ex (g) = \tt$ if exists $n: g n = \tt$
 
+
+Day 5
+
+Exericses explanation.
+
+\begin{enumerate}
+ \item 
+ \item 
+ \item 
+ \item $M\lesssim_c M' $ iff $\forall C[]: int: C[M] \Downarrow n \Rightarrow C[M'] \Downarrow n$
+  Lemmma. T.f.a.e
+  \begin{enumerate}
+  \item[1] $M \lesssim_c N$
+  \item[2] $\lambda x_1 .... x_k M \lesssim_c \lambda x_1 .... x_k M'$
+  \item[3] $\forall P: ((\bar\tau \rarr \sigma) \rarr int$ 
+  $P(\lambda x_1,...,x_n . M) = P(\lambda x_1,...,x_n . M')$
+  \item[2\' by Razplohas] $\forall \tau: Var \rarr PCF_0: M[r] \lesssim_c M[r']$
+  \item[3\' by Razplohas] $\forall P:\sigma \rarr int: PM[r] \lesssim_c PM[r']$
+  \end{enumerate}
+  
+  Begin proof.
+  (1)$\Rightarrow$(2). 
+  Want: $C[\lambda \bar{x} . M] \lesssim_c C[\lambda \bar{x} . M']$.
+  $D[]:=C[\lambda \bar{x}. []]$
+  
+  (2)$\Rightarrow$(1). 
+  Want: $C[M] \lesssim_c C[M']$. We going to create context of more complex type.
+  $D[] := C[ []_{\tau_1\rarr\tau_2\rarr ..\rarr\tau_k\rarr\sigma} x_1 x_2... x_k]$.
+  In $D[\lambda\bar{x}.M] = C[(\lambda\bar{x}.M) \bar{x}]$ after $\beta$-step beocmes $C[M]$.
+  
+  (2)$\Leftrightarrow$(3) is just old lemma because we are talking about closed terms.
+  (2)$\Rightarrow$(2') 
+  Want $C[M[r]] \lesssim_c C[M'[r]]$, $N_i = r(x_i$ and $D[]:=C[[]N_1 N_2 ... n_k]$.
+  
+  
+  Also (3'') $PM \lesssim_c PM'$ should be ok, but it is less useful because $PM$ still can contain 
+  free variables and we can reduce it to number.
+  
+  (2') to (2). Instead of going directly we go to applicative order. I.e. we can apply cosed terms 
+  to application. But when we do this we can do beta reduction and get  a substitution.
+  \item [five]
+  \item [six] Define exactly is STLC: for ground types and later for function types. The logical
+  relations should leave constants (left-)invariant.
+  
+  $R_{bool} = \{ (a,b,c)\in B_\bot \mid a=\bot or b=\bot or c=\bot or a=b=c \}$
+  
+  $R_{int}  = \{ (a,b,c)\in N_\bot \mid a=\bot or b=\bot or c=\bot or a=b=c \}$
+  
+  Check applying $(succ,succ,succ)$ to the sets.
+  
+  With $Y$-combinator still no problem (describe as in provious case). And everything else is 
+  $\lambda$-calculus.
+  
+  Look at $(por,por,por)$ and apply it at $(\tt,\bot,\ff), (\bot,\tt,\ff)$ we get
+  $(\tt,\tt,\ff)$.
+  
+  Karl Sieber paper about how to do for a maximum subset of PCF (2 rank types only or something).
+  
+  
+\end{enumerate}
+
+\section{Day5}
+
+\begin{theorem}[``Lemma``]
+if $\forall \sigma$: every element of $D_\sigma$ is PCF-definable then the semantics will be 
+fully abstract: $M\lesssim_cM' \Rightarrow \sem{M}{} \leq \sem{M'}{}$
+\end{theorem}
+
+\begin{proof}
+ Induction over type of M/M'.
+ 
+ ground type: $M\lesssim_c M' \Leftrightarrow M\lesssim_a M' \Leftrightarrow$ 
+ $(M\Downarrow n \Rightarrow M'\Downarrow n$
+ 
+ $M,M': \sigma \rarr \tau$: $M\lesssim_c M' \Leftrightarrow M\lesssim_a M' \Leftrightarrow$ 
+ $\forall N:\sigma: MN\lesssim_a M'N \Leftrightarrow by I.H. \sem{MN}{} \leq \sem{M'N}{}$, i.e.
+ $\sem{M}{}(\sem{N}{}) \leq \sem{M}{N}(\sem{M'}{N})$ and by definability 
+ $\sem{M}{} \leq \sem{M'}{}$
+\end{proof}
+
+The goal now is to make this lemma a useful lemma.
+
+\begin{theorem}[Lemma(Plotkin)]
+if $\forall \sigma$: every comapct element of $D_\sigma$ is (PCF+paror)-definable then the 
+semantics will be fully abstract: $M\lesssim_cM' \Rightarrow \sem{M}{} \leq \sem{M'}{}$.
+\end{theorem}
+
+\begin{definition}
+ D is a cpo, $a\in D$ and is called compact if whenever $Vd_n \geq a$ then 
+ $d_n \geq a$ for some $n$.
+\end{definition}
+
+Example in the power of set al finite sets are compact.
+
+\begin{definition}
+ D is \textbf{algebraic} CPO if every element $d\in D$ can be written as $Va_n=d$ with all $a_n$
+ compact.
+\end{definition}
+
+All subsets of natural numbers are compact because every set is a limit of some finite series of 
+subsets.
+
+\begin{definition}
+ D is $\omega-$\textbf{algebraic} CPO if every element $d\in D$ can 
+ be written as $Va_n=d$ with all $a_n$ compact, and there are only countably many 
+ compact elements in $D$.
+\end{definition}
+
+Goal: to show that add $D_\sigma$ are $\omega$-algebraic.
+\begin{proof}
+ Induction over types.
+ 
+ $B_\bot$, $N_\bot$ are $\omega$-algebraic (all chains are finite).
+ 
+ $D_\sigma$ is w-alg. and $D_\tau$ is w-algebriac $\Rightarrow? [D_\sigma \rarr D_\tau]$ is w-alg?
+ NO, we need some additional constraints.
+\end{proof}
+
+\begin{definition}
+ $D$ is a Scott-domain  it is $\omega$-algebraic CPO and for any two elements $x,y\in D$
+ there is an  infinum : $x\wedge y$ -- largest lower bound.
+\end{definition}
+
+Example of  the case where there is not infinum: let two elements have to uncomparable lower bounds
+(5 element: a,b, two lower bound and bottom)
+%picture.
+
+\begin{theorem}
+ Scott domains form a Cartesion-closed category.
+\end{theorem}
+\begin{proof}
+ $D\times E$, $(x,x')\wedge(y,y') = (x\wedge x', t\wedge y')$.
+ 
+ Let's look at function spaces: $[D\rarr E]$. we have $x$ and $f(x)$ and $c$ below $f(x)$.
+ $x$ is a limit of compact
+ elements, so $f=V f(d_n)$, because f is continious $ = Vf(d_n) \geq c$. So one of the $d_n$ should 
+ have been sent above $c$. By monotonicity all element after $d_n$ go above $c$. Let's make 
+ function about it.
+ 
+\[
+    d-to-c(x)=\left\{
+                \begin{array}{ll}
+                  c \text{when} x\geq d\\
+                  \bot \text{otherwise}
+                \end{array}
+              \right.
+  \]
+
+  We introduced step functions.
+  
+  $K[D\rarr E] reversly \in d-to-c$.
+  
+  So the function is supremum of step functions but we cannot arrange step functions to the chain,
+  and to do this we need ''meet`` operation.
+\end{proof}
+
+\begin{theorem}
+Goal: $D_\sigma$ are Scott-domain.  (upgrade of previous failed goal)
+\end{theorem}
+
+\begin{proof}
+ Induction over types.
+ 
+ $B_\bot$, $N_\bot$ are $\omega$-algebraic (all chains are finite).
+ 
+ $D_\sigma$ is w-alg. and $D_\tau$ is w-algebriac $\Rightarrow? [D_\sigma \rarr D_\tau]$ is w-alg?
+ 
+ $\sem{M}{}\leq\sem{M'}{} \Leftrightarrow$ $\forall a . \sem{M}{}(a)\leq\sem{M'}{}(a)$
+ $\Leftrightarrow$ $\forall a \in K(D_\sigma). \sem{M}{}(a)\leq\sem{M'}{}(a)$. So, it's enough to 
+ test it on compact.
+ 
+ % я не совсем понял часть ли это доказателства но он начал жоказывать новую лемму.
+\end{proof}
+
+\begin{theorem}[Lemma]
+ $f,g: D\rarr E$, $D$ and $E$ are alg. Then $f\leq g \Leftrightarrow\forall a\in K(D)$:
+ $d(a)\leq g(a)$.
+\end{theorem}
+
+\begin{proof}
+ $x\in D$. want $d(x) \leq g(x)$, $x=Va_n$. Let c compact be below $f(x)$
+ 
+ $g(x) = f(Va_n) = Vf(a_n) \geq Vf(a_n) = f(Va_n) = f(x)$
+\end{proof}
+
+Question: why Scott-condition was needed?
+
+Exercise: $D$ is Scott-domain. $A\subseteq D$ boudded by $x\in D$ ($A\leq x)$. Then
+''joins`` $\wedge A$ exists.
+
+We already know that Scott-model is not fully abstract for PCF (because parallel or is not 
+definable).
+
+\begin{theorem}[Milner, 77]
+ There exists a fully abstract model for PCF which consists of Scott-domains
+\end{theorem}
+
+He pick term model factored by $\alpha\beta\eta$-equivalence.
+ 
+Full abstraction problem. Nobody did it strightforwardly because it is undecideable to detect all
+uncomutable elements
+ 
+\begin{theorem}[Loader'01]
+There is no effective presentation of Milner's model.
+\end{theorem}
+
+Game semantics was built because of that problem (by three independent groups). And folks
+showed that they cn construct fully abstract semantics.
+\begin{theorem}
+Game model does not consist of CPOs.
+\end{theorem}
+It doesn't violate Loader's result.
+
+
+Now we discuss an untyped \lambda-calculus.
+
+It took about 40 years to obtain first model for the untyped \lambda-calculus.
+
+Grammar: $M ::= x \mid MM \mid \lambda x . m$
+
+$\sem{\cdot}{}: \Lambda \rarr D$ -- we give semantics in the one set, because everthing have the
+same (still no) type.
+
+$\sem{x}{} = \rho(x)$
+
+$\sem{MN}{\rho} = \sem{M}{\rho} ( \sem{N}{\rho})$. if we look to it abstractly we will go to 
+combinatory algebra. Another way to look at it as functions. We need an operation whih converts
+$D$ to $[D\rarr D]$, and $\sem{MN}{\rho} = \sem{M}{\rho} ( \sem{N}{\rho}) = \psi (\sem{M}{\rho})( \sem{N}{\rho})$
+
+$\sem{\lambda x. M}{\rho} = \Psi(a \mapsto \sem{M}{\rho[x\mapsto a]}).$
+
+% Что такое Фи я не записал
+
+\begin{theorem}[Substitution Lemma]
+ holds verbatim.
+\end{theorem}
+
+\begin{theorem}[Correctness]
+ Equivalence relations hold, congruence rules holds, $\alpha$ holds.
+ $\beta$ holds if $\psi \circ \phi = id_{D\rarr D}$. 
+ $\eta$ hiolds if $\phi \circ \psi = id_D$
+\end{theorem}
+
+\begin{proof}
+ $\beta$: $\sem{(\lambda x . M)N}{\rho} = \psi (\sem{\lambda x . M}{\rho})(\sem{N}{\rho})$
+ $\psi (\phi (a \mapsto \sem{M}{\rho[x \mapsto a]))(\sem{N}{\rho}$
+ 
+ by ass $\sem{M}{\rho[x\mapsto \sem{N}{\rho}]}$
+\end{proof}
+
+the problem. $\psi$ and $\phi$ need to be bijections, i.e. D nad $[D\rarr D]$ are in bijections.
+But this can never be happen , only in one element set. Because of cardinality issues.
+
+$\mid D\rarr D\mid  = \mid w^D\mid > \mid D \mid$
+
+but we cn't use single-element sets because very functions should have fixpoint because
+
+$Y=\lambda f . (\lambda x. f(x x)) (\lambda x. f(x x))$ and $YM=M(YM)$.
+
+The next idea of Scott was to construct 2, $[2\rarr2]$, $[2\rarr2] \rarr [2\rarr2]$, etc and get
+a limit.
+
+To get a limit we need somehow say that one set is larger than another.
+
+$2 \leftrightharpoons [2\rarr 2]$ from right it is projection, and from the left is embedding.
+
+$e(d) = \lambda x . d$ and $p(f) = f(\bot)$.
+
+There is a good property about this two functions: $p(e(d)=d$ then $p \cdot e = id_D$.
+$e(p(f)) \leq f$, $e\cdot p \leq id_{(D\rarr D)}$. \textit{Embedding-projection pair.}
+
+For $ [2\rarr 2] \leftrightharpoons [[2\rarr 2]\rarr  [2\rarr 2]]$ we will not do exactly the same.
+Will use $p_1$ and $e_1$ as projectio/embedding functions.
+
+we will try to get a link from $(e,p)$ to $e_1,p_1)$.
+% картинка которую не зарисовывал.
+
+$e_1=\lambda f . e\circ f\circ p$ and $p_1 = \lambda f. p\circ f\circ e$
+
+$p_1\circ e_1(f) = pefpe = f$ and $e1\circ p_1(f) = epfep \leq f$.
+
+% каринка с $D_i$ and F^nD_0
+
+$D_\inf$ = {$(a_n) \mid \forall n: a_n = p(a_{n+1})$} 
+
+And to get from $D_\inf$ to $F^2D$ we just need to take 2nd element of sequence.
+
+After applying functor $F$ we will get $F$ everywhere and also $[D_\inf\rarr D\inf]$, object 
+such that there are some links and by categorial nonse we will have link between $D\inf$ and
+$[D_\inf\rarr D_\inf]$. It will not be $e,p$ pair, it will be pair of isomorphisms.
+
+% recommended chapter from book by daniel abramsky by the lecturer. Chapter 4 or 6.
+
+Here our models depend on starting $D$ but in PCF there is  canonical model.
+
+Recursive domain equations.
+
+Domain of lists: $L = 1+D*L$ has canonical solution in set and domain theory. Because there is
+no contrvariant argument as or functions. we can describ all recursive types like this.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{prooftree}
  \AxiomC{$ $}
