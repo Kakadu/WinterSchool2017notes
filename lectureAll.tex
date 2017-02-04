@@ -47,27 +47,34 @@ Long very weird history about inventing ``a new math`` by americans to compete w
 And this new math started from teaching sets in schoold as basis of mathematics}
 
 \chapter{Simply typed $\lambda$-calculus}
+\paragraph{}
 
-Types: $\sigma ::= i | \sigma \rarr \sigma$
+Grammar for types
 
-We denote translation as $\sem{\cdot}{}$.
+$\sigma ::= i \mid \sigma \rarr \sigma$
+$ \sigma \in \Pi $
+Type $ i $ is called initial type.
 
-Semantic brackets: $\sem{i}{} = A_{\tau}^{A_\sigma} = A_i $, 
-where $i$ is a syntax object and $A$ is arbitrary set.
+We define semantics for all the types, having (arbitrary) set $ A_i $ corresponding to initial type.
+
+For set theoretic model, other types are inhabitated as follows: $ A_{\sigma \rightarrow \tau} = A_{\tau}^{A_\sigma}$ that is, set of all total functions from $ A_{\sigma} $ to $ A_{\tau} $
+
+
+We denote semantic function as $\sem{\cdot}{}$ both for type and calculus terms.
+
+Example of semantics for types: $\sem{i}{} = A_i $
 
 \paragraph{}
-Grammar (in Church-style\footnote{In Curry-style variable have no types}): 
+Grammar for terms: 
 \begin{itemize}
- \item terms $M ::= x | MM | \lambda x . M$
+ \item terms $M ::= x \mid MM \mid \lambda x . M$
 \end{itemize}
-All types are in $\Pi$, and $type(x) = \sigma$ when $x$ is a variable. For every $\sigma$ there 
-are infinity many veriables of that type. We will write $x^\sigma$ which means that variable has 
-type $\sigma$.
 
+\section{Typing rules}
+\paragraph{}
+Here we inductively define syntactical mapping between from calculus terms to type terms.
 
-
-$\llbracket i -> \tau \rrbracket = \{all (total) functions form A_\sigma to A_\tau\} $
-where functions are subsets of pairs  from $A_\sigma \times A_\tau$.
+We will write $x^\sigma$ which means that variable has type $\sigma$ (explicit typing in Church-style\footnote{In Church style, we have explicit types for variables,  Curry-style variable has no types}).
 
 % Тут полный пиздец с правилами
 \begin{prooftree}
@@ -86,39 +93,60 @@ where functions are subsets of pairs  from $A_\sigma \times A_\tau$.
 \BinaryInfC{$(\lambda x^\sigma . M) : \sigma \rarr \tau$}
 \end{prooftree}
 
+We will use function $ type $ to get type of term, e.g. $ type(x^i) = i $
 
+We assume, that for every $\sigma$ there 
+are infinity many variables of that type.
 
 \section{Abstract \& concrete syntax}
-In sematics we usually think about abstract syntax. which means a lot of conventions
-for example, $\lambda x . x y$ can be lambda from $x$ to $x y$ or identity function applied to $y$.
+
+\paragraph{}
+In semantics we usually think about abstract syntax. which means a lot of conventions.
+E. g. , $\lambda x . x y$ can be lambda from $x$ to $x y$ or identity function applied to $y$.
 We need derivation trees to be sure.
 
 % Тут картинка которую я пока не умею рисовать в техе. Отлично, можно отдохнуть.
 Another approach instead of derivation is DeBruijn indexes.
 
-\begin{prooftree}
-\AxiomC{}
-\AxiomC{$\llbracket M\rrbracket \in A_\sigma$}
-\BinaryInfC{$\llbracket x^\sigma\rrbracket_\rho = \rho(x)\}$
-and $\rho : Var \rarr Union A_\sigma$ $\forall \sigma \in \Pi$}
-\end{prooftree}
+\section{Semantics of $\lambda$-calculus}
+\paragraph{}
 
-\begin{prooftree}
-\AxiomC{$\llbracket MN\rrbracket_\rho = \llbracket M\rrbracket\rho (\llbracket N\rrbracket\rho)$}
-\AxiomC{}
-\BinaryInfC{}
-\end{prooftree}
+We will inductively define meaning of terms, that is, mapping between terms and certain values.
 
-Where $\llbracket M\rrbracket_\rho \in {A_\tau}^{A_\tau}$ etc
+\paragraph{}
 
-$\sem{\lambda x^\sigma . M}{\rho} = (a \mapsto \sem{M}{\rho_{[x \mapsto a]}}) = lambda a [M]\rho[x \mapsto a]$
+To understand, which value correspond to which variable, we need environment $ \rho $, that is, partial mapping between variables and their values.
 
-$\rho[x \mapsto a] \rho(a)$ when $x \neq y$
+$\rho : Var \rightarrow \bigcup_{\sigma \in \Pi} A_\sigma$
 
+\paragraph{}
+We will need to introduce bindings to the variables in $ \rho $, that is, extend the environment. For this purpose we will use notation below:
+
+$\rho[x \mapsto a](x) = a$
+$\rho[x \mapsto a](y) = \rho(y) $ if $x \neq y$
+
+Semantics of term will be a function from environment $ \rho $ to domain, corresponding the type of term.
+
+The property below is a proposition and actually it should be proven(after semantics is given).
+
+$\sem{M}{\rho} \in A_\sigma$ if $ type(M) = \sigma $
+
+\paragraph{}
+
+Semantics:
+
+$\sem{x^\sigma}{\rho} = \rho(x)$
+
+$\sem{ MN }{\rho} = (\sem{ M }{\rho}) (\sem{N}{\rho})$
+
+$\sem{\lambda x^\sigma . M}{\rho} = (a \mapsto \sem{M}{\rho[x \mapsto a]}) = \lambda a . \sem{M}{\rho[x \mapsto a]}$
+
+
+% do we need it?
 Proposition. If M is well-typed of type $\sigma$ then $\llbracket M\rrbracket_\rho \in
 A_\sigma$ where $\rho$ is a var. environment
 
-\subsection{lemma}
+\subsection{Lemma}
 % тут лемма
 %TODO: переписать с тетради
 
@@ -137,9 +165,11 @@ Let's look: we have a type $i \rightarrow i$. Can we describe function
 $\{T \rightarrow T, F \rightarrow F\}$? Yes, identity for booleans. What about
 $\{T \rightarrow T, F \rightarrow T\}$? No.
 
-It's proven that the task is indecidable.
+It's proven that the task is indecidable.(what? which task is undecidable? sounds like bullshit)
 
 \section{Equations}
+\paragraph{Axioms of equality as equivalence relation}
+
 \begin{prooftree}
  \AxiomC{}
  \AxiomC{}
@@ -159,7 +189,7 @@ It's proven that the task is indecidable.
  \UnaryInfC{M=N}
 \end{prooftree}
 
-It were equivalence relations
+\paragraph{Congruence rules}
 
 \begin{prooftree}
  \AxiomC{$M=M'$}
@@ -172,33 +202,35 @@ It were equivalence relations
  \UnaryInfC{$\lambda x . M = \lambda x . M'$}
 \end{prooftree}
 
-It were congruence rules.
+\paragraph{$\beta$-reduction.}
 
 \begin{prooftree}
  \AxioM{}
  \UnaryInfC{$(\lambda x . M)N = M[N/x]$}
 \end{prooftree}
 
-$\beta$-reduction.
-
-\begin{prooftree}
- \AxiomC{$y \notin FV(M)$}
- \UnaryInfC{$\lambda x . M = \lambda y . M[y/x]$}
-\end{prooftree}
-$\alpha$-conversion
-
+\paragraph{$\eta$-expansion}
 
 \begin{prooftree}
  \AxiomC{$x \notin FV(M)$}
  \AxiomC{$M: \sigma \rightarrow \tau$}
  \BinaryInfC{$M = \lambda x^\sigma . M x $}
 \end{prooftree}
-$\eta$-something
 
+\paragraph{$\alpha$-conversion}
 
-Are thiese rules correct?
+Actually this one can be inferred from $\beta$ and $\eta$ but is useful
 
-Are this rules complete? (Yes, proved by Fridman).
+\begin{prooftree}
+ \AxiomC{$y \notin FV(M)$}
+ \UnaryInfC{$\lambda x . M = \lambda y . M[y/x]$}
+\end{prooftree}
+
+We want to know whether the rules are enough to define precisely and syntactically equality for the calculus of functions, therefore we need to answer two questions.
+
+Are these rules correct?
+
+Are these rules complete? (Yes, proved by Friedman).
 
 \paragraph{}
 Want: if $M=N$ can be defined then $\sem{M}{\rho} = \llbracket N \rrbracket_\rho$ for any $A_i$  and any $\rho$
