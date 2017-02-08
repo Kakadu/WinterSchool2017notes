@@ -5,20 +5,25 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{stmaryrd}
-\usepackage{tikzcd}
+\usepackage{tikz-cd}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
 %\newcommand{\llbracket}{ \llbracket }
 \newcommand{\sem}[2]{ \llbracket#1\rrbracket_{#2} }
+\newcommand\abceq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily $\alpha\beta\eta$}}}{=}}}
+
 %\AxiomC{$M=M'$}  
 \newcommand{\AxioM}[1]{ \AxiomC{$#1$} }
 \newcommand{\rarr}{ \rightarrow }
+\newenvironment{claim}[1]{\par\noindent\underline{Claim:}\space#1}{}
+\newenvironment{claimproof}[1]{\par\noindent\underline{Proof:}\space#1}{\hfill $\blacksquare$}
 %\usepackage{fontspec}
 %\setmainfont[Ligatures={TeX,Common}]{Linux Libertine O}
-\usepackage[a4paper, total={6in, 8in}]{geometry}
-\geometry{margin=10mm}
+\usepackage[a4paper, margin=10mm]{geometry}
+%\geometry{margin=10mm}
 
 \renewcommand{\tt}{ tt }
 \newcommand{\ff}{ ff }
@@ -122,7 +127,7 @@ $\rho : Var \rightarrow \bigcup_{\sigma \in \Pi} A_\sigma$
 \paragraph{}
 We will need to introduce bindings to the variables in $ \rho $, that is, extend the environment. For this purpose we will use notation below:
 
-$\rho[x \mapsto a](x) = a$
+$\rho[x \mapsto a](x) = a$ and
 $\rho[x \mapsto a](y) = \rho(y) $ if $x \neq y$
 
 Semantics of term will be a function from environment $ \rho $ to domain, corresponding the type of term.
@@ -147,6 +152,10 @@ Proposition. If M is well-typed of type $\sigma$ then $\llbracket M\rrbracket_\r
 A_\sigma$ where $\rho$ is a var. environment
 
 \subsection{Lemma}
+\begin{lemma}
+ About simultaneous substitution AFAIR.
+\end{lemma}
+
 % тут лемма
 %TODO: переписать с тетради
 
@@ -246,16 +255,8 @@ Let's prove that other axioms are OK, (not really weird, sanely chosen ot someth
 % $(a \mapsto \llbracket M\rrbracket\rho[x->a]) (\llbracket N\rrbracket_\rho)$ =
 % $\llbracket M \rrbracket _\rho [x -> \llbracket N\rrbracket_\rho]$ 
 
-
-(Capture avoiding) Substituition Lemma.
-$\llbracket M[N/x\rrbracket_\rho = \llbracket M\rrbracket_{\rho
-[x \mapsto \llbracket N\rrbracket_\rho]}$
-
-% тут снова картинка чтобы показать композиционность
-
-%байка про то, как в лиспе неправильно сделано подстановки, а Схема всё поправила.
-% when you write function it may contain free variable. When we use it later on, LISP
-% looks for it in the environment where we use this function
+\begin{lemma}[(Capture avoiding) Substituition]
+$\llbracket M[N/x\rrbracket_\rho = \llbracket M\rrbracket_{\rho[x \mapsto \llbracket N\rrbracket_\rho]}$
 \begin{enumerate}
 \item $x[N/x] := N$
 \item $y[N/x] := y, y \neq x$
@@ -264,14 +265,22 @@ $\llbracket M[N/x\rrbracket_\rho = \llbracket M\rrbracket_{\rho
 \item $(\lambda y . M)[N/x] := (\lambda y . M)[N/x]$ when $y \not\in FV(N)$
 \item $(\lambda y . M)[N/x] := \lambda z . (M[z/y])[N/x]$ when $y \in FV(N), z \not\in FV(N) \cup FV(M) \cup \{x\}$
 \end{enumerate}
+\end{lemma}
 
-Proofs
+% тут снова картинка чтобы показать композиционность
+
+%байка про то, как в лиспе неправильно сделано подстановки, а Схема всё поправила.
+% when you write function it may contain free variable. When we use it later on, LISP
+% looks for it in the environment where we use this function
+
+\begin{proof}
+ 
 \begin{enumerate}
  \item obvious :)
  \item obvious :)
  \item obvious :)
  \item 
- \item The 5th case:
+ \item The 5th case: % written from the head of Kakadu. Needs double check
 
 when $y \not\in FV(N)$
 
@@ -279,10 +288,17 @@ $(\lambda y . M)[N/x] = (a \mapsto \llbracket  M[N/x] \rrbracket_{\rho[y \mapsto
 
 using lemma hypothesis
 
-$ = (a \mapsto \llbracket M\rrbracket_{\rho[y \mapsto a, x \mapsto \llbracket [N/x] \rrbracket_{\rho[z \mapsto a] }]}$
+$ = (a \mapsto \sem{M}{\rho[y \mapsto a, x \mapsto \sem{N}{\rho[y \mapsto a] }]})$
 
+simplify
 
-\item 
+$ = (a \mapsto \sem{M}{\rho[y \mapsto a, x \mapsto \sem{N}{\rho}]})$
+
+by definition is 
+
+$\llbracket \lambda y . M \rrbracket_{\rho[x \mapsto \llbracket N\rrbracket_\rho]}$
+
+\item % case 6
 Now we will prove for the most difficult case (6th) ($\alpha$-equivalence) and others will be exercises.
 
 $\llbracket \lambda z . M[z/y][N/x]\rrbracket_\rho = (a \mapsto 
@@ -298,20 +314,23 @@ $(a \mapsto \llbracket M[z/y]\rrbracket_{\rho[z \mapsto a, x \mapsto \llbracket 
 
 by hypothesis
 
-$(a \mapsto \llbracket M\rrbracket_{\rho[z \mapsto a, x \mapsto \llbracket N \rrbracket_\rho,y \mapsto\llbracket z\rrbracket_{\rho[z \mapsto a, x \mapsto \llbracket N\rrbracket]_\rho ]}})$
+$(a \mapsto \llbracket M\rrbracket_{\rho[z \mapsto a, x \mapsto \sem{N}{\rho}, y \mapsto\sem{z}{\rho[z \mapsto a, x \mapsto \sem{N}{\rho} }]})$
 
 symplify
 
-$(a \mapsto \llbracket M\rrbracket_{\rho[z \mapsto a, x \mapsto \llbracket N \rrbracket_\rho,y \mapsto a]})$
+$(a \mapsto \sem{M}{\rho[z \mapsto a, x \mapsto \sem{N}{\rho}, y \mapsto a]})$
 
 symplify
 
-$(a \mapsto \llbracket M\rrbracket_{\rho[         x \mapsto \llbracket N \rrbracket_\rho,y \mapsto a]})$
+$(a \mapsto \sem{M}{\rho[         x \mapsto \sem{N}{\rho}, y\mapsto a]})$
 
-by definition
-$\llbracket \lambda y M \rrbracket_{\rho[x \mapsto \llbracket N\rrbracket_\rho]}$
+by definition is 
+
+$\llbracket \lambda y . M \rrbracket_{\rho[x \mapsto \llbracket N\rrbracket_\rho]}$
 
 \end{enumerate}
+
+\end{proof}
 
 
 
@@ -325,17 +344,15 @@ Do we have any other ways to construct $A_i$ to be able to construct lambda term
 $\lambda$-calculus is a way to write intuitionistic proofs when we have logic with only implication. 
  $(\phi \rightarrow \phi)\rightarrow \phi$ is a tautology
 
-But when we use empty set as $A_i$ we can get a \textit{classical} tautology which is not describably by $\lambda$-term.
+But when we use empty set as $A_i$ we can get a \textit{classical} tautology which is not describable by $\lambda$-term.
 
 \subsection{}
 We need a one thing for completeness proof.
 
-Completeness: If $\forall$ $A_i$ and $\forall$ $\rho$: $\sem{M}{\rho}$ then $M=N$ in 
-$\alpha,\beta\eta$ sense.
+Completeness: If $\forall A_i$ and $\forall \rho$: $\sem{M}{\rho} = \sem{N}{\rho}$ then $M\abceq N$ .
 
 Fridman's compeleteness theorem
-If for $A_i=NN$ andnd all $\rho$: $\sem{M}{\rho}$ then $M=N$ in 
-$\alpha,\beta\eta$ sense.
+If for $A_i=NN$ andnd all $\rho$: $\sem{M}{\rho}$ then $M\abceq N$.
 
 For finite set we can get lambda-terms which will not be $\alpha,\beta\eta$ equivalent. There is not enough room for terms.
 
@@ -352,15 +369,17 @@ The problem is that right part can be not in the chosen subset. And it's difficu
 set has infinite size.
 
 Let's suppose that $A_i$ is partially ordered set and
-$A_{\sigma \rightarrow \tau} = \{ f: A_\sigma \rightarrow A_\tau | 
-\forall x \leq y \in A_\sigma f(x) leq f(y)\}$
-we take all monotone functions and in this case the problem does not occur (prove is an exercise).
+$A_{\sigma \rightarrow \tau} = \{ f: A_\sigma \rightarrow A_\tau \mid 
+\forall x \leq y \in A_\sigma$: $f(x) \leq f(y)\}$
+we take all monotone functions and in this case the problem does not occur (proof is an exercise).
 
 At least the things we chosen should behave as functions, we need to be able to apply them.
-$\forall \sigma, \tau app_{\sigma,\tau} : A_{\sigma \rightarrow \tau} \times A_{\sigma} 
+$\forall \sigma, \tau$: $app_{\sigma,\tau} : A_{\sigma \rightarrow \tau} \times A_{\sigma} 
 \rightarrow A_{\tau}$
 
-Extensibility: $\forall f,g \in A_{\tau \rightarrow \tau}$ $(\forall x \in A_{\sigma}: app(f,x) = app(g,x)) \Rightarrow f = g$, i.e. functions are the same if they behave the same.
+\begin{definition}[Extensibility]
+$\forall f,g \in A_{\tau \rightarrow \tau}$ $(\forall x \in A_{\sigma}: app(f,x) = app(g,x)) \Rightarrow f = g$, i.e. functions are the same if they behave the same.
+\end{definition}
 
 $\forall \sigma,\tau$  $ab_{\sigma,\tau}: {A_\tau}^{A_\sigma} \rightharpoonup A_{\sigma \rightarrow \tau}$ (surjection).
 
@@ -423,12 +442,12 @@ which nobody did get.
 \end{itemize}
 
 
-\section{DAy 2}
+\section{Day 2}
 Back to completness proof. Now we will chose only one model and only one $\rho$ to show 
 $\alpha, \beta, \eta$ equivalence. The general technique is to make a completness proof for a new caculus 
 to be sure that we listed enough rules in it.
 
-Termmodel: $S_\sigma = $ all terms of type $\sigma$ $ / \alpha\beta\eta$. So we introduce equivalence classes.
+Term model: $S_\sigma = $ all terms of type $\sigma$ $ / \alpha\beta\eta$. So we introduce equivalence classes.
 
 $[x^\sigma] \in S_\sigma$. Also $(\lambda x .x) x$ is in the same class, so $S\sigma$ is infinite. 
 $[y^\sigma]$ is another class,
@@ -442,20 +461,19 @@ in case when $[M]=[M']$ and $[N]=[N']$ we need to prove that $app([M],[N]) = [M'
 
 We had a rules
 \begin{prooftree}
- \AxiomC{$ M=M'$ in $\alpha\beta\eta$ sense}
- \AxiomC{$ M=N'$ in $\alpha\beta\eta$ sense}
- \BinaryInfC{$ MN=M'N' $ in $\alpha\beta\eta$ sense}
+ \AxiomC{$ M\abceq M'$ }
+ \AxiomC{$ M\abceq N'$ }
+ \BinaryInfC{$ MN\abceq M'N' $}
 \end{prooftree}
 
 
 % И тут вопрос от Вяткина, который никто не понял кроме препода
-% Напомнить Диме что-то меня спросить про офис где-то
 
-Showing extensionality.  When we ouck two functions from same class, and if they behave same
+Showing extensionality.  When we pick two functions from same class, and if they behave same
 they should be equal.
 
 $[M], [M'] \in S_{\sigma \rightarrow \tau}$
-Assume that $app([M],[N]) = app([M'],[N]) \forall [N]\in S_{\sigma}$. We need to show that $[m]$ and $[M']$ 
+Assume that $app([M],[N]) = app([M'],[N]) \forall [N]\in S_{\sigma}$. We need to show that $[M]$ and $[M']$ 
 are $\alpha\beta\eta$-equal. We will use particular $[x^\sigma]$ for $[N]$. 
 Now $[Mx] = [M'x]$ are the same or
 in another words $Mx = M'x$ are $\alpha\beta\eta$-equal. By congruence rules we can add $\lambda$: 
@@ -466,10 +484,10 @@ $x$ doesn't occur in $M$ and we need a right to choose right $x$ (there we use t
 
 Now something less trivial.
 
-$\rho: Var \rightarrow \cup S_\sigma where \sigma is a type$
+$\rho: Var \rightarrow \cup S_\sigma$ where $\sigma$ is a type.
 
 
-$\sem{\lambda x . M}{\rho}$ = $([N] \mapsto \sem{M}{\rho[x \mapsto [N]]}$, Now the right part should 
+$\sem{\lambda x . M}{\rho}$ = $([N] \mapsto \sem{M}{\rho[x \mapsto [N]]})$, Now the right part should 
 have a representative that behaves in the same way $\in S_{\sigma \rightarrow \tau}$. which is almost trues except the free vars in $M$
 .
 
@@ -484,7 +502,8 @@ think substitution as finite-defined function from free variables in term. In ma
 usually defnied as global function that behaves everywhere, and behaves as identity for variables 
 that do not occur free in the specified term
 
-Definition.
+\begin{definition}[Simultaneous substitution]
+
 $x[r] = r(x)$
 
 $(MN)[r] = (M[r])(N[r])$
@@ -493,6 +512,7 @@ $(\lambda x . M)[r] = \lambda z . M[r, x \mapsto z] $ where $z \not\in  FV(r(y))
 
 Simultaneous menas that we do not do full substitution, we are not going to introduce closed terms,
 we only do the first level.
+\end{definition}
 
 Proof of claim.
 $M\equiv x    \sem{x}{\rho} = \rho(x)$ and $[x[r]] = [r(x)]$ and now $\rho(x) = [r(x)]$ bceause 
@@ -500,7 +520,7 @@ $r(x) \in \rho(x)$, $[r(x)] = \rho(x)$.
 
 Lambda case is long....
 $M=\lambda x . M$, $\sem{\lambda x . M}{\rho}$ = $([N] \mapsto \sem{M}{\rho_{x \mapsto [N]}})$
-  
+
 $[(\lambda x . M)[r]]$ = $[\lambda z . M[r, x:= z]]$. Now we need to look what happen when we apply
 $[\lambda z . M[r, x:= z]]$ to $([N] \mapsto \sem{M}{\rho_{x \mapsto [N]}})$.
 
@@ -530,14 +550,17 @@ Let we have $A_i$ and $B_i$ and we want to relate model based on natural numbers
 $R_i \subseteq A_i \times B_i$
 
 $R_{\sigma \rightarrow  \tau} = \{$ (f,g) $\in A_{\sigma \rightarrow \tau} \times
-B_{\sigma \rightarrow \tau} |
+B_{\sigma \rightarrow \tau} \mid
 \forall (x,y) \in R_\sigma (f(x), g(y)) \in R_\sigma \}$
 
-Fundamental lemma for logical relations.
-for any type $\sigma$, for any closed term $M$ of type $\sigma$ it's true that 
-$(\sem{M}{} ^A, \sem{M}{} ^B) \in R_\sigma$
+\begin{lemma}[Fundamental lemma for logical relations]
+For any type $\sigma$, for any closed term $M$ of type $\sigma$ it's true that 
+$(\sem{M}{} ^A, \sem{M}{} ^B) \in R_\sigma$ 
+\end{lemma}
 
-Proof. INduction over structure of general terms.
+
+
+Proof. Induction over structure of general terms.
 
 Notes. This lemma is true not only for set-theoretic model but also for Henkinmodel andnd
 others.
@@ -557,12 +580,17 @@ B: term model.
 logical relation : $R_i \subseteq A_i \times B_i = N \times S_i$ such that $R_i$ is a surjective 
 function from N to $S_i$\footnote{There we use that N is countable}.
 
-Claim. For all types $\sigma$, $R_\sigma$ is a partial surjective function from $A_\sigma$ to $S_\sigma$.
-
+\begin{claim}
+For all types $\sigma$, $R_\sigma$ is a partial surjective function from $A_\sigma$ to $S_\sigma$.
+ 
 \begin{itemize}
  \item $(a,t) \& (a,t') \in R_\sigma \Rightarrow t = t'$
  \item $\forall t \in S_\sigma \exists a  \in A_\sigma (a,t) \in R_\sigma$
 \end{itemize}
+\end{claim}
+
+\begin{claimproof}
+ 
 
 Proof. Induction over all types .
 
@@ -570,6 +598,8 @@ $i$: OK, by assumption.
 
 $\sigma \rightarrow \tau$ : $R_\sigma$,$R_\tau$ are partial surjective functions. Let's show 
 $R_{\sigma \rightarrow \tau}$ has properties 1 and two.
+
+\end{claimproof}
 
 % картинка из теорката.
 %\begin{equation}
@@ -888,7 +918,7 @@ F is Scott-continious if for all chains  $f_0 < f_1 < f_2 < ...$
 the $V F(f_n) = F(Vf_n)$ for all n$\in N$.
 \end{definition}
 N.B. it can be $\leq$ in the chain but it will make more difficult reasoning. There we
-the notion of непрерывности but for isolated input.
+the notion of continuity but for isolated input.
 
 Def. (D, $\leq$) is CPO (complete partial order) if for every chain $a_o \leq a_1 \leq ...$
 there is a limit $a$: $a_n\leq a$ for every $n$ and for every $b\in D$: $a_n\leq b$ $a\leq b$ .
@@ -1437,9 +1467,9 @@ Game model does not consist of CPOs.
 It doesn't violate Loader's result.
 
 
-Now we discuss an untyped \lambda-calculus.
+Now we discuss an untyped $\lambda$-calculus.
 
-It took about 40 years to obtain first model for the untyped \lambda-calculus.
+It took about 40 years to obtain first model for the untyped $\lambda$-calculus.
 
 Grammar: $M ::= x \mid MM \mid \lambda x . m$
 
@@ -1468,9 +1498,10 @@ $\sem{\lambda x. M}{\rho} = \Psi(a \mapsto \sem{M}{\rho[x\mapsto a]}).$
 
 \begin{proof}
  $\beta$: $\sem{(\lambda x . M)N}{\rho} = \psi (\sem{\lambda x . M}{\rho})(\sem{N}{\rho})$
- $\psi (\phi (a \mapsto \sem{M}{\rho[x \mapsto a]))(\sem{N}{\rho}$
- 
- by ass $\sem{M}{\rho[x\mapsto \sem{N}{\rho}]}$
+ $\psi (\phi (a \mapsto \sem{M}{\rho[x \mapsto a]}))(\sem{N}{\rho})$
+
+ by ass %$\sem{M}{\rho[x\mapsto \sem{N}{\rho}]}$
+ $\sem{M}{\rho[x\mapsto \sem{N}{\rho}]}$
 \end{proof}
 
 the problem. $\psi$ and $\phi$ need to be bijections, i.e. D nad $[D\rarr D]$ are in bijections.
@@ -1506,13 +1537,13 @@ $p_1\circ e_1(f) = pefpe = f$ and $e1\circ p_1(f) = epfep \leq f$.
 
 % каринка с $D_i$ and F^nD_0
 
-$D_\inf$ = {$(a_n) \mid \forall n: a_n = p(a_{n+1})$} 
+$D_{\inf}$ = {$(a_n) \mid \forall n: a_n = p(a_{n+1})$} 
 
-And to get from $D_\inf$ to $F^2D$ we just need to take 2nd element of sequence.
+And to get from $D_{\inf}$ to $F^2D$ we just need to take 2nd element of sequence.
 
-After applying functor $F$ we will get $F$ everywhere and also $[D_\inf\rarr D\inf]$, object 
+After applying functor $F$ we will get $F$ everywhere and also $[D_{\inf}\rarr D{\inf}]$, object 
 such that there are some links and by categorial nonse we will have link between $D\inf$ and
-$[D_\inf\rarr D_\inf]$. It will not be $e,p$ pair, it will be pair of isomorphisms.
+$[D_{\inf}\rarr D_{\inf}]$. It will not be $e,p$ pair, it will be pair of isomorphisms.
 
 % recommended chapter from book by daniel abramsky by the lecturer. Chapter 4 or 6.
 
